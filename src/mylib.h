@@ -2,11 +2,13 @@
 
 #include <cstdint>
 #include <vector>
+#include <map>
 
 class Addressable {
   public:
     virtual ~Addressable(){};
 };
+
 
 class Memory : public Addressable {
   public:
@@ -14,12 +16,14 @@ class Memory : public Addressable {
     virtual ~Memory(){};
     uint32_t get_byte(size_t index) { return bytes.at(index); };
     void set_bytes(size_t start, std::string hex_string);
+    void set_zero_bytes(size_t start, size_t len);  // XXX how to type-enforce len vs end
     size_t get_size() const { return bytes.size(); };
     const std::vector<uint8_t>& get_bytes() const { return bytes; };
 
   private:
     std::vector<uint8_t> bytes;
 };
+
 
 class Registers : public Addressable {
   public:
@@ -40,6 +44,7 @@ class Registers : public Addressable {
     uint32_t eip;
 };
 
+
 class CPU {
   public:
     CPU();
@@ -55,6 +60,33 @@ class CPU {
     Memory memory;
 };
 
+
 std::ostream& operator<<(std::ostream& os, CPU const& cpu);
 std::ostream& operator<<(std::ostream& os, Memory const& memory);
 std::ostream& operator<<(std::ostream& os, Registers const& registers);
+
+void print_byte_in_hex(uint8_t byte);
+
+
+// abstract base class
+class InstructionBase {
+    public:
+        InstructionBase() = default;
+        virtual ~InstructionBase() {};
+};
+
+class InstructionFactory {
+    public:
+        InstructionFactory();
+        using InstructionConstructor = std::unique_ptr<InstructionBase>(*)();
+        static bool register_opcode(uint8_t opcode, InstructionConstructor);
+        static std::unique_ptr<InstructionBase> create(uint8_t);
+    private:
+        static std::map<uint8_t, InstructionConstructor> instruction_set;
+};
+
+class ArithmeticInstruction : public InstructionBase {
+    public:
+        ArithmeticInstruction();
+        virtual ~ArithmeticInstruction() {};
+};

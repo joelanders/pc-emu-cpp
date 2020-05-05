@@ -15,9 +15,18 @@ Registers::Registers() : eip(0) {}
 CPU::CPU() {}
 
 void print_vector_bytes(std::vector<uint8_t> const& v) {
+    size_t i = 0;
     for (auto& b : v) {
-        std::cout << std::setfill('0') << std::setw(2) << std::hex << b << " ";
+        if (i++ % 16 == 0) {
+            printf("\n\t");
+        }
+        printf("%02x ", b);
     }
+    printf("\n");
+}
+
+void print_byte_in_hex(uint8_t byte) {
+    printf("%02x ", byte);
 }
 
 std::ostream& operator<<(std::ostream& os, const CPU& cpu) {
@@ -31,6 +40,12 @@ std::ostream& operator<<(std::ostream& os, const Registers& registers) {
     os << std::setfill('0') << std::setw(8) << std::hex << registers.get_eax() << std::endl;
     os << "\tecx: ";
     os << std::setfill('0') << std::setw(8) << std::hex << registers.get_ecx() << std::endl;
+    os << "\tebx: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_ebx() << std::endl;
+    os << "\tedx: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_edx() << std::endl;
+    os << "\teip: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_eip() << std::endl;
     return os;
 }
 
@@ -56,24 +71,59 @@ void CPU::execute_next_instruction() {
     }
     opcode = maybe_prefix;
 
-    std::cout << "got opcode:" << opcode << std::endl;
-    std::cout << "got prefixes: ";
+    printf("got opcode: ");
+    print_byte_in_hex(opcode);
+    printf("\n");
+
+    printf("got prefixes: ");
     print_vector_bytes(overrides);
+    registers.inc_eip();
 }
 
 void Memory::set_bytes(size_t start, std::string hex_string) {
     std::vector<std::string> hexes;
     boost::split(hexes, hex_string, boost::is_any_of(" "));
+
     if (start + hexes.size() > bytes.size()) {
         bytes.resize(start + hexes.size());
     }
 
-    size_t i = 0;
+    size_t i = start;
     for (auto& hex_digit : hexes) {
         std::stringstream ss;
         std::cout << "fuck: " << hex_digit << std::endl;
-        ss << std::hex << hex_digit;
-        ss >> bytes[i];
+        uint8_t byte = strtol(hex_digit.c_str(), NULL, 16);
+        bytes[i] = byte;
         ++i;
     }
 }
+
+void Memory::set_zero_bytes(size_t start, size_t len) {
+    if (start + len > bytes.size()) {
+        bytes.resize(start + len);
+    }
+
+    for (size_t i = start; i < len; i++) {
+        bytes[i] = 0;
+    }
+}
+
+InstructionFactory::InstructionFactory() {};
+std::map<uint8_t, InstructionFactory::InstructionConstructor> InstructionFactory::instruction_set {};
+
+bool InstructionFactory::register_opcode(uint8_t opcode, InstructionConstructor inst_const) {
+    if (auto it = instruction_set.find(opcode); it == instruction_set.end()) {
+        instruction_set[opcode] = inst_const;
+        return true;
+    }
+    return false;
+}
+
+std::unique_ptr<InstructionBase> InstructionFactory::create(uint8_t opcode) {
+    if (auto it = instruction_set.find(opcode); it == instruction_set.end()) {
+        return it->second();
+    }
+    return nullptr;
+}
+
+ArithmeticInstruction::ArithmeticInstruction() {};
