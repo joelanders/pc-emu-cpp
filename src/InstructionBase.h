@@ -15,6 +15,4 @@ class InstructionBase {
 };
 
 
-
-
 #endif // EXAMPLE_INSTRUCTIONBASE_H

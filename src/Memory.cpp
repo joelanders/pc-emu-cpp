@@ -53,4 +53,3 @@ operator<<(std::ostream& os, const Memory& memory) {
     print_vector_bytes(memory.get_bytes());
     return os;
 }
-

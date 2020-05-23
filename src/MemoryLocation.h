@@ -5,21 +5,19 @@
 #ifndef EXAMPLE_MEMORYLOCATION_H
 #define EXAMPLE_MEMORYLOCATION_H
 
-#include "mylib.h"
 #include "LocationBase.h"
+#include "mylib.h"
 
 class MemoryLocation : public LocationBase {
   public:
     MemoryLocation(uint32_t address);
     ~MemoryLocation(){};
     virtual uint32_t read(CPU& cpu, Width w);
-    virtual uint32_t write(CPU& cpu, Width w, uint32_t value);
+    virtual bool write(CPU& cpu, Width w, uint32_t value);
 
   private:
     uint32_t address;
 };
-
-
 
 
 #endif // EXAMPLE_MEMORYLOCATION_H

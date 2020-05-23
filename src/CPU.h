@@ -5,8 +5,8 @@
 #ifndef EXAMPLE_CPU_H
 #define EXAMPLE_CPU_H
 
-#include "Registers.h"
 #include "Memory.h"
+#include "Registers.h"
 #include "mylib.h"
 
 class CPU {
@@ -22,6 +22,8 @@ class CPU {
     void set_byte(size_t address, uint8_t value);
     void set_bytes(size_t start, std::string hex_string);
 
+    bool set_register(Width w, Register reg, uint32_t value);
+
   private:
     Registers registers;
     Memory memory;
@@ -29,7 +31,6 @@ class CPU {
 
 std::ostream&
 operator<<(std::ostream& os, CPU const& cpu);
-
 
 
 #endif // EXAMPLE_CPU_H

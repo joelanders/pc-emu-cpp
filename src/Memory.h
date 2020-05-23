@@ -27,5 +27,4 @@ std::ostream&
 operator<<(std::ostream& os, Memory const& memory);
 
 
-
 #endif // EXAMPLE_MEMORY_H

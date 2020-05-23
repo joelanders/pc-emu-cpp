@@ -14,15 +14,15 @@ ArithmeticInstruction::execute() {
     switch (opcode) {
     case 0x00: {
         std::cout << "FUCK 000" << std::endl;
-        auto src = MemoryLocation(0x00);
-        auto dest = MemoryLocation(0x01);
-        return add(src, dest);
+        auto dest = MemoryLocation(0x00);
+        auto src = MemoryLocation(0x01);
+        return add(dest, src);
     }
     case 0x01: {
         std::cout << "FUCK 111" << std::endl;
         auto src = MemoryLocation(0x00);
         auto dest = RegisterLocation(Eax);
-        return add(src, dest); // XXX dummy locations
+        return add(dest, src); // XXX dummy locations
     }
     }
     return false;

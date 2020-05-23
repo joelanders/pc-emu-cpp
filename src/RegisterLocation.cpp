@@ -9,17 +9,21 @@ RegisterLocation::RegisterLocation(Register reg) { reg = reg; }
 uint32_t
 RegisterLocation::read(CPU& cpu, Width w) {
     switch (reg) {
-        case Eax:
-            return cpu.get_registers().get_eax();
-            break;
-        case Ecx:
-            return cpu.get_registers().get_ecx();
-            break;
+    case Eax:
+        return cpu.get_registers().get_eax();
+        break;
+    case Ecx:
+        return cpu.get_registers().get_ecx();
+        break;
     }
 }
 
-uint32_t
+bool
 RegisterLocation::write(CPU& cpu, Width w, uint32_t value) {
-    return 0x69;
-}
+    std::cout << "RegisterLocation::write() to reg " << reg;
+    std::cout << " value ";
+    print_quad_in_hex(value);
+    printf("\n");
 
+    return cpu.set_register(w, reg, value);
+}

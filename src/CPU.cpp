@@ -47,3 +47,7 @@ CPU::set_bytes(size_t start, std::string hex_string) {
     return memory.set_bytes(start, hex_string);
 }
 
+bool
+CPU::set_register(Width w, Register reg, uint32_t value) {
+    registers.set_register(w, reg, value);
+}

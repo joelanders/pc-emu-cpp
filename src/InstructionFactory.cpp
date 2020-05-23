@@ -25,4 +25,3 @@ InstructionFactory::create(uint8_t opcode) {
     std::cout << "NOT CREATING" << std::endl;
     return nullptr;
 }
-

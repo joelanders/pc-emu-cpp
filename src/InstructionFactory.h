@@ -5,8 +5,8 @@
 #ifndef EXAMPLE_INSTRUCTIONFACTORY_H
 #define EXAMPLE_INSTRUCTIONFACTORY_H
 
-#include "mylib.h"
 #include "InstructionBase.h"
+#include "mylib.h"
 
 class InstructionFactory {
   public:
@@ -18,8 +18,6 @@ class InstructionFactory {
   private:
     static std::map<uint8_t, InstructionConstructor> instruction_set;
 };
-
-
 
 
 #endif // EXAMPLE_INSTRUCTIONFACTORY_H

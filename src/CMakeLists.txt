@@ -1,9 +1,9 @@
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(ClangFormat)
 clangformat_setup(
-    main.cpp
-    mylib.cpp
-    mylib.h
+        main.cpp
+        mylib.cpp
+        mylib.h
 )
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,19 +13,19 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.72.0)
 
-if(Boost_FOUND)
+if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     # add_executable(progname file1.cxx file2.cxx)
     #target_link_libraries(progname ${Boost_LIBRARIES})
-endif()
+endif ()
 
 # static library
 add_library(mylib_static STATIC mylib.cpp)
 target_include_directories(
-    mylib_static
-    PRIVATE
+        mylib_static
+        PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
-    )
+)
 
 # shared library
 add_library(mylib_shared SHARED mylib.cpp)
@@ -33,12 +33,12 @@ add_library(mylib_shared SHARED mylib.cpp)
 # compile main executable
 add_executable(main.x main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h)
 target_include_directories(
-    main.x
-    PRIVATE
+        main.x
+        PRIVATE
         ${PROJECT_BINARY_DIR}
-    PUBLIC
+        PUBLIC
         ${Boost_INCLUDE_DIRS}
-    )
+)
 
 # link library
 target_link_libraries(main.x mylib_static)

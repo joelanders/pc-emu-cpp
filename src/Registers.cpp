@@ -22,3 +22,27 @@ operator<<(std::ostream& os, const Registers& registers) {
     return os;
 }
 
+// XXX handle widths
+bool
+Registers::set_register(Width w, Register reg, uint32_t value) {
+    std::cout << "Registers::set_register() to reg " << reg;
+    std::cout << " value ";
+    print_quad_in_hex(value);
+    printf("\n");
+
+    switch (reg) {
+    case Eax:
+        eax = value;
+        break;
+    case Ecx:
+        ecx = value;
+        break;
+    case Ebx:
+        ebx = value;
+        break;
+    case Edx:
+        edx = value;
+        break;
+    }
+    return true;
+}

@@ -1,10 +1,10 @@
 #include <cstdio>
 #include <iostream>
 
+#include "ArithmeticInstruction.h"
+#include "InstructionFactory.h"
 #include "config.h"
 #include "mylib.h"
-#include "InstructionFactory.h"
-#include "ArithmeticInstruction.h"
 
 int
 main(int argc, char** argv) {
@@ -29,17 +29,19 @@ main(int argc, char** argv) {
     cpu.execute_next_instruction();
     cpu.execute_next_instruction();
 
-    std::cout << "HELLO FUCK" << std::endl;
-
     InstructionFactory::register_opcode(
         0x00, [&cpu]() mutable { return std::make_unique<ArithmeticInstruction>(0x00, cpu); });
 
-    std::cout << "HELLO FUCK 222" << std::endl;
+    InstructionFactory::register_opcode(
+        0x01, [&cpu]() mutable { return std::make_unique<ArithmeticInstruction>(0x01, cpu); });
+
 
     auto instruction = InstructionFactory::create(0x00);
-    std::cout << "HELLO FUCK 3333" << std::endl;
     instruction->execute();
-    std::cout << "HELLO FUCK 44444" << std::endl;
+    std::cout << cpu << std::endl;
+
+    instruction = InstructionFactory::create(0x01);
+    instruction->execute();
     std::cout << cpu << std::endl;
 
 

@@ -16,6 +16,8 @@ class Registers {
     uint32_t get_ebx() const { return ebx; }
     uint32_t get_edx() const { return edx; }
     uint32_t get_eip() const { return eip; }
+
+    bool set_register(Width w, Register reg, uint32_t value);
     void inc_eip() { ++eip; }
 
   private:

@@ -1,8 +1,6 @@
 #include "mylib.h"
 
 
-
-
 void
 print_vector_bytes(std::vector<uint8_t> const& v) {
     size_t i = 0;
@@ -24,4 +22,3 @@ void
 print_quad_in_hex(uint32_t quad) {
     printf("%08x ", quad);
 }
-
