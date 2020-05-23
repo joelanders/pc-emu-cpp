@@ -3,6 +3,8 @@
 
 #include "config.h"
 #include "mylib.h"
+#include "InstructionFactory.h"
+#include "ArithmeticInstruction.h"
 
 int
 main(int argc, char** argv) {
