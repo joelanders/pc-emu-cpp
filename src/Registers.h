@@ -6,10 +6,8 @@
 #define EXAMPLE_REGISTERS_H
 
 #include "mylib.h"
-#include "Addressable.h"
 
-
-class Registers : public Addressable {
+class Registers {
   public:
     Registers();
     virtual ~Registers(){};

@@ -6,10 +6,9 @@
 #define EXAMPLE_MEMORY_H
 
 #include "mylib.h"
-#include "Addressable.h"
 
 
-class Memory : public Addressable {
+class Memory {
   public:
     Memory();
     virtual ~Memory(){};

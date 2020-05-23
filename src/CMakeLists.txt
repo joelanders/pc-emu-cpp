@@ -31,7 +31,7 @@ target_include_directories(
 add_library(mylib_shared SHARED mylib.cpp)
 
 # compile main executable
-add_executable(main.x main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h Addressable.cpp Addressable.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h)
+add_executable(main.x main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h)
 target_include_directories(
     main.x
     PRIVATE
