@@ -4,7 +4,8 @@
 #include "config.h"
 #include "mylib.h"
 
-int main(int argc, char** argv) {
+int
+main(int argc, char** argv) {
     printf("program version: %i.%i.%i\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
     printf("git hash: %s\n", GIT_REVISION);
 
@@ -26,8 +27,19 @@ int main(int argc, char** argv) {
     cpu.execute_next_instruction();
     cpu.execute_next_instruction();
 
-    InstructionFactory::register_opcode(0x00,
-            []() -> std::unique_ptr<InstructionBase> {return std::make_unique<ArithmeticInstruction>();});
+    std::cout << "HELLO FUCK" << std::endl;
+
+    InstructionFactory::register_opcode(
+        0x00, [&cpu]() mutable { return std::make_unique<ArithmeticInstruction>(0x00, cpu); });
+
+    std::cout << "HELLO FUCK 222" << std::endl;
+
+    auto instruction = InstructionFactory::create(0x00);
+    std::cout << "HELLO FUCK 3333" << std::endl;
+    instruction->execute();
+    std::cout << "HELLO FUCK 44444" << std::endl;
+    std::cout << cpu << std::endl;
+
 
     return 0;
 }
