@@ -29,18 +29,11 @@ main(int argc, char** argv) {
     cpu.execute_next_instruction();
     cpu.execute_next_instruction();
 
-    InstructionFactory::register_opcode(
-        0x00, [&cpu]() mutable { return std::make_unique<ArithmeticInstruction>(0x00, cpu); });
-
-    InstructionFactory::register_opcode(
-        0x01, [&cpu]() mutable { return std::make_unique<ArithmeticInstruction>(0x01, cpu); });
-
-
-    auto instruction = InstructionFactory::create(0x00);
+    auto instruction = InstructionFactory::create(0x00, cpu);
     instruction->execute();
     std::cout << cpu << std::endl;
 
-    instruction = InstructionFactory::create(0x01);
+    instruction = InstructionFactory::create(0x01, cpu);
     instruction->execute();
     std::cout << cpu << std::endl;
 

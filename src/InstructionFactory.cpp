@@ -8,19 +8,25 @@ InstructionFactory::InstructionFactory(){};
 std::map<uint8_t, InstructionFactory::InstructionConstructor> InstructionFactory::instruction_set{};
 
 bool
-InstructionFactory::register_opcode(uint8_t opcode, InstructionConstructor inst_const) {
-    if (auto it = instruction_set.find(opcode); it == instruction_set.end()) {
-        instruction_set[opcode] = inst_const;
-        return true;
+InstructionFactory::register_opcodes(std::vector<uint8_t> opcodes, InstructionConstructor constructor) {
+    for(auto const& opcode: opcodes) {
+        std::cout << "SEARCHING for ";
+        print_byte_in_hex(opcode);
+        if (auto it = instruction_set.find(opcode); it == instruction_set.end()) {
+            instruction_set[opcode] = constructor;
+            std::cout << "REGISTERING" << std::endl;
+        } else {
+            std::cout << "BAD! DUPLICATE OPCODE" << std::endl;
+        }
     }
-    return false;
+    return true;
 }
 
 std::unique_ptr<InstructionBase>
-InstructionFactory::create(uint8_t opcode) {
+InstructionFactory::create(uint8_t opcode, CPU& cpu) {
     if (auto it = instruction_set.find(opcode); it != instruction_set.end()) {
         std::cout << "CREATING" << std::endl;
-        return it->second();
+        return it->second(opcode, cpu);
     }
     std::cout << "NOT CREATING" << std::endl;
     return nullptr;

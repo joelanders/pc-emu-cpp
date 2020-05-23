@@ -7,13 +7,14 @@
 
 #include "InstructionBase.h"
 #include "mylib.h"
+#include "CPU.h"
 
 class InstructionFactory {
   public:
     InstructionFactory();
-    using InstructionConstructor = std::function<std::unique_ptr<InstructionBase>()>;
-    static bool register_opcode(uint8_t opcode, InstructionConstructor);
-    static std::unique_ptr<InstructionBase> create(uint8_t);
+    using InstructionConstructor = std::unique_ptr<InstructionBase>(*)(uint8_t, CPU& cpu);
+    static bool register_opcodes(std::vector<uint8_t> opcodes, InstructionConstructor);
+    static std::unique_ptr<InstructionBase> create(uint8_t opcode, CPU& cpu);
 
   private:
     static std::map<uint8_t, InstructionConstructor> instruction_set;

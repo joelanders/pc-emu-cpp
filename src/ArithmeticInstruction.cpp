@@ -33,3 +33,10 @@ ArithmeticInstruction::add(LocationBase& dest, LocationBase& src) {
     dest.write(cpu, U8, dest.read(cpu, U8) + src.read(cpu, U8));
     return true;
 }
+
+const std::vector<uint8_t> opcodes { 0x00, 0x01 };
+
+bool
+ArithmeticInstruction::s_registered =
+    InstructionFactory::register_opcodes(opcodes,
+                                         ArithmeticInstruction::create_method);

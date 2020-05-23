@@ -4,7 +4,13 @@
 
 #include "Registers.h"
 
-Registers::Registers() : eip(0) {}
+Registers::Registers() :
+     eax(0),
+     ecx(0),
+     ebx(0),
+     edx(0),
+     eip(0)
+{}
 
 std::ostream&
 operator<<(std::ostream& os, const Registers& registers) {
