@@ -4,6 +4,7 @@
 
 #include "CPU.h"
 #include "mylib.h"
+#include "InstructionFactory.h"
 
 CPU::CPU() {}
 
@@ -15,6 +16,9 @@ operator<<(std::ostream& os, const CPU& cpu) {
 
 void
 CPU::execute_next_instruction() {
+    printf("execute_next_instruction(), eip: ");
+    print_quad_in_hex(registers.get_eip());
+    printf("\n");
     // auto opcode = memory
     std::set<uint8_t> prefix_bytes{0x2e, 0x36, 0x3e, 0x26, 0x64, 0x65};
 
@@ -27,6 +31,7 @@ CPU::execute_next_instruction() {
         maybe_prefix = memory.get_byte(registers.get_eip());
     }
     opcode = maybe_prefix;
+    registers.inc_eip();
 
     printf("got opcode: ");
     print_byte_in_hex(opcode);
@@ -34,7 +39,11 @@ CPU::execute_next_instruction() {
 
     printf("got prefixes: ");
     print_vector_bytes(overrides);
-    registers.inc_eip();
+
+    auto instruction = InstructionFactory::create(opcode, *this);
+    if (instruction) {
+        instruction->execute(*this);
+    }
 }
 
 void

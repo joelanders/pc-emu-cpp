@@ -16,7 +16,7 @@ class ArithmeticInstruction : public InstructionBase {
   public:
     ArithmeticInstruction(uint8_t opcode, CPU& cpu);
     virtual ~ArithmeticInstruction(){};
-    virtual bool execute();
+    virtual bool execute(CPU& cpu);
 
     static std::unique_ptr<InstructionBase> create_method(uint8_t opcode, CPU& cpu) {
         return std::make_unique<ArithmeticInstruction>(opcode, cpu);
@@ -25,11 +25,12 @@ class ArithmeticInstruction : public InstructionBase {
   private:
     uint8_t opcode;
     CPU& cpu;
-    bool add(LocationBase& dest, LocationBase& src);
+    bool add(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w);
 
     // constexpr static const std::vector<uint8_t> opcodes;
     static bool s_registered;
 };
 
+std::pair<std::unique_ptr<LocationBase>, std::unique_ptr<RegisterLocation>> decode_modrm(CPU& cpu);
 
 #endif // EXAMPLE_ARITHMETICINSTRUCTION_H

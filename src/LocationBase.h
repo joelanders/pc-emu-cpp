@@ -14,6 +14,8 @@ class LocationBase {
     virtual ~LocationBase() = default;
     virtual uint32_t read(CPU& cpu, Width w) = 0;
     virtual bool write(CPU& cpu, Width w, uint32_t value) = 0;
+
+    virtual void print() = 0;
 };
 
 

@@ -28,7 +28,16 @@ MemoryLocation::write(CPU& cpu, Width w, uint32_t value) {
     print_quad_in_hex(address);
     std::cout << "value ";
     print_quad_in_hex(value);
+    std::cout << " width ";
+    print_width(w);
     printf("\n");
     cpu.set_byte(address, value % 256);
     return true;
+}
+
+void
+MemoryLocation::print() {
+    std::cout << "MemoryLocation: ";
+    print_quad_in_hex(address);
+    std::cout << " ";
 }

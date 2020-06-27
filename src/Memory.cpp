@@ -15,6 +15,25 @@ Memory::set_byte(size_t address, uint8_t value) {
     bytes[address] = value;
 }
 
+uint32_t
+Memory::get_byte(size_t address) {
+    if (address + 1 > bytes.size()) {
+        bytes.resize(address + 1);
+    }
+
+    return bytes.at(address);
+}
+
+uint32_t
+Memory::get_quad(size_t address) {
+    uint32_t value = 0;
+    value += bytes.at(address);
+    value += bytes.at(address + 1) << 8;
+    value += bytes.at(address + 2) << 16;
+    value += bytes.at(address + 3) << 24;
+    return value;
+}
+
 void
 Memory::set_bytes(size_t start, std::string hex_string) {
     std::vector<std::string> hexes;

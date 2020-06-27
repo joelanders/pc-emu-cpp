@@ -15,6 +15,8 @@ class MemoryLocation : public LocationBase {
     virtual uint32_t read(CPU& cpu, Width w);
     virtual bool write(CPU& cpu, Width w, uint32_t value);
 
+    virtual void print();
+
   private:
     uint32_t address;
 };

@@ -21,5 +21,14 @@ void
 print_quad_in_hex(uint32_t quad);
 
 
-enum Register { Eax, Ecx, Ebx, Edx, Eip, Esp };
+enum Register { Eax, Ecx, Edx, Ebx,  Esp, Ebp, Esi, Edi,  Eip };
 enum Width { U8, U16, U32 };
+
+Register
+index_to_register(uint8_t index);
+
+void
+print_width(Width w);
+
+void
+print_register(Register r);

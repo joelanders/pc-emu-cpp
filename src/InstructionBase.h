@@ -5,13 +5,14 @@
 #ifndef EXAMPLE_INSTRUCTIONBASE_H
 #define EXAMPLE_INSTRUCTIONBASE_H
 
+class CPU;
 
 // abstract base class
 class InstructionBase {
   public:
     InstructionBase() = default;
     virtual ~InstructionBase(){};
-    virtual bool execute() = 0;
+    virtual bool execute(CPU& cpu) = 0;
 };
 
 
