@@ -6,7 +6,7 @@
 #define EXAMPLE_INSTRUCTIONFACTORY_H
 
 #include "InstructionBase.h"
-#include "mylib.h"
+#include "util.h"
 #include "CPU.h"
 
 class InstructionFactory {

@@ -9,6 +9,7 @@ std::map<uint8_t, InstructionFactory::InstructionConstructor> InstructionFactory
 
 bool
 InstructionFactory::register_opcodes(std::vector<uint8_t> opcodes, InstructionConstructor constructor) {
+    std::cout << "REGISTER OPCODES";
     for(auto const& opcode: opcodes) {
         std::cout << "SEARCHING for ";
         print_byte_in_hex(opcode);

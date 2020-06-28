@@ -4,7 +4,12 @@
 
 #include "RegisterLocation.h"
 
-RegisterLocation::RegisterLocation(Register reg) { reg = reg; }
+RegisterLocation::RegisterLocation(Register new_reg) {
+    std::cout << "RegisterLocation::RegisterLocation(): ";
+    print_register(new_reg);
+    printf("\n");
+    reg = new_reg;
+}
 
 uint32_t
 RegisterLocation::read(CPU& cpu, Width w) {
@@ -15,6 +20,24 @@ RegisterLocation::read(CPU& cpu, Width w) {
         break;
     case Ecx:
         value = cpu.get_registers().get_ecx();
+        break;
+    case Edx:
+        value = cpu.get_registers().get_edx();
+        break;
+    case Ebx:
+        value = cpu.get_registers().get_ebx();
+        break;
+    case Esp:
+        value = cpu.get_registers().get_esp();
+        break;
+    case Ebp:
+        value = cpu.get_registers().get_ebp();
+        break;
+    case Esi:
+        value = cpu.get_registers().get_esi();
+        break;
+    case Edi:
+        value = cpu.get_registers().get_edi();
         break;
     }
 

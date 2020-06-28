@@ -10,7 +10,7 @@
 #include "LocationBase.h"
 #include "MemoryLocation.h"
 #include "RegisterLocation.h"
-#include "mylib.h"
+#include "util.h"
 
 class ArithmeticInstruction : public InstructionBase {
   public:
@@ -31,6 +31,19 @@ class ArithmeticInstruction : public InstructionBase {
     static bool s_registered;
 };
 
-std::pair<std::unique_ptr<LocationBase>, std::unique_ptr<RegisterLocation>> decode_modrm(CPU& cpu);
+class Operands {
+    public:
+        Operands(std::unique_ptr<LocationBase>, std::unique_ptr<RegisterLocation>);
+        void print();
+
+        std::unique_ptr<LocationBase> E();
+        std::unique_ptr<RegisterLocation> G();
+
+        std::unique_ptr<LocationBase> e;
+        std::unique_ptr<RegisterLocation> g;
+};
+
+Operands decode_modrm(CPU& cpu);
+
 
 #endif // EXAMPLE_ARITHMETICINSTRUCTION_H

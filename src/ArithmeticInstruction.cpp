@@ -14,60 +14,28 @@ ArithmeticInstruction::execute(CPU& cpu) {
     print_byte_in_hex(opcode);
     switch (opcode) {
     case 0x00: {
-        std::cout << "opcode 0x00" << std::endl;
         Width w = U8;
-        auto rm_reg = decode_modrm(cpu);
-        auto dest = std::move(rm_reg.first);
-        auto src = std::move(rm_reg.second);
-        std::cout << "dest: ";
-        dest->print();
-        printf("\n");
-        std::cout << "src: ";
-        src->print();
-        printf("\n");
-        return add(std::move(dest), std::move(src), w);
+        auto operands = decode_modrm(cpu);
+        operands.print();
+        return add(std::move(operands.E()), std::move(operands.G()), w);
     }
     case 0x01: {
-        std::cout << "opcode 0x01" << std::endl;
         Width w = U32;
-        auto rm_reg = decode_modrm(cpu);
-        auto dest = std::move(rm_reg.first);
-        auto src = std::move(rm_reg.second);
-        std::cout << "dest: ";
-        dest->print();
-        printf("\n");
-        std::cout << "src: ";
-        src->print();
-        printf("\n");
-        return add(std::move(dest), std::move(src), w);
+        auto operands = decode_modrm(cpu);
+        operands.print();
+        return add(std::move(operands.E()), std::move(operands.G()), w);
     }
     case 0x02: {
-        std::cout << "opcode 0x02" << std::endl;
         Width w = U8;
-        auto rm_reg = decode_modrm(cpu);
-        auto dest = std::move(rm_reg.second);
-        auto src = std::move(rm_reg.first);
-        std::cout << "dest: ";
-        dest->print();
-        printf("\n");
-        std::cout << "src: ";
-        src->print();
-        printf("\n");
-        return add(std::move(dest), std::move(src), w);
+        auto operands = decode_modrm(cpu);
+        operands.print();
+        return add(std::move(operands.G()), std::move(operands.E()), w);
     }
     case 0x03: {
-        std::cout << "opcode 0x03" << std::endl;
         Width w = U32;
-        auto rm_reg = decode_modrm(cpu);
-        auto dest = std::move(rm_reg.second);
-        auto src = std::move(rm_reg.first);
-        std::cout << "dest: ";
-        dest->print();
-        printf("\n");
-        std::cout << "src: ";
-        src->print();
-        printf("\n");
-        return add(std::move(dest), std::move(src), w);
+        auto operands = decode_modrm(cpu);
+        operands.print();
+        return add(std::move(operands.G()), std::move(operands.E()), w);
     }
     }
     return false;
@@ -87,6 +55,7 @@ ArithmeticInstruction::add(std::unique_ptr<LocationBase> dest,
     return true;
 }
 
+// XXX this isn't working in the tests
 const std::vector<uint8_t> opcodes { 0x00, 0x01, 0x02, 0x03 };
 
 bool
@@ -94,9 +63,36 @@ ArithmeticInstruction::s_registered =
     InstructionFactory::register_opcodes(opcodes,
                                          ArithmeticInstruction::create_method);
 
+// XXX initializer list...
+Operands::Operands(std::unique_ptr<LocationBase> E, std::unique_ptr<RegisterLocation> G) {
+    e = std::move(E);
+    g = std::move(G);
+}
+
+std::unique_ptr<LocationBase>
+Operands::E() {
+    return std::move(e);
+}
+
+std::unique_ptr<RegisterLocation>
+Operands::G() {
+    return std::move(g);
+}
+
+void
+Operands::print() {
+    std::cout << "E: ";
+    e->print();
+    printf("\n");
+    std::cout << "G: ";
+    g->print();
+    printf("\n");
+}
+
+
 // mod: 00: rm specifies a memory address stored in a register
 // mod: 11: rm specifies a register
-std::pair<std::unique_ptr<LocationBase>, std::unique_ptr<RegisterLocation>>
+Operands
 decode_modrm(CPU& cpu) {
     uint8_t modrm = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
     cpu.get_registers().inc_eip();
@@ -107,9 +103,10 @@ decode_modrm(CPU& cpu) {
     uint8_t rm  = (modrm & 0b00000111);
 
     if (mod == 0b11) {
-        return std::make_pair(std::make_unique<RegisterLocation>(index_to_register(rm)),
-                              std::make_unique<RegisterLocation>(index_to_register(reg))
-        );
+        std::cout << "-- register-to-register mode --" << std::endl;
+        auto operands = Operands(std::make_unique<RegisterLocation>(index_to_register(rm)),
+                        std::make_unique<RegisterLocation>(index_to_register(reg)));
+        return operands;
     }
 
     // no SIB byte
@@ -118,7 +115,7 @@ decode_modrm(CPU& cpu) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
             uint8_t disp8 = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
             cpu.get_registers().inc_eip();
-            return std::make_pair(std::make_unique<MemoryLocation>(address + disp8),
+            return Operands(std::make_unique<MemoryLocation>(address + disp8),
                                   std::make_unique<RegisterLocation>(index_to_register(reg)));
         }
         if (mod == 0b10) {
@@ -128,22 +125,22 @@ decode_modrm(CPU& cpu) {
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
-            return std::make_pair(std::make_unique<MemoryLocation>(address + disp32),
-                                  std::make_unique<RegisterLocation>(index_to_register(reg)));
+            return Operands(std::make_unique<MemoryLocation>(address + disp32),
+                            std::make_unique<RegisterLocation>(index_to_register(reg)));
         }
         // at this point, mod == 0b00
         if (rm != 0b101) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
-            return std::make_pair(std::make_unique<MemoryLocation>(address),
-                                  std::make_unique<RegisterLocation>(index_to_register(reg)));
+            return Operands(std::make_unique<MemoryLocation>(address),
+                            std::make_unique<RegisterLocation>(index_to_register(reg)));
         } else {
             uint32_t disp32 = cpu.get_memory().get_quad(cpu.get_registers().get_eip());
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
-            return std::make_pair(std::make_unique<MemoryLocation>(disp32),
-                                  std::make_unique<RegisterLocation>(index_to_register(reg)));
+            return Operands(std::make_unique<MemoryLocation>(disp32),
+                            std::make_unique<RegisterLocation>(index_to_register(reg)));
         }
     }
     // at this point, there is a SIB byte
@@ -186,6 +183,6 @@ decode_modrm(CPU& cpu) {
         base_value = cpu.get_registers().get_register_by_index(base, U32);
     }
 
-    return std::make_pair(std::make_unique<MemoryLocation>(disp + scaled_index + base_value),
-                            std::make_unique<RegisterLocation>(index_to_register(reg)));
+    return Operands(std::make_unique<MemoryLocation>(disp + scaled_index + base_value),
+                    std::make_unique<RegisterLocation>(index_to_register(reg)));
 }

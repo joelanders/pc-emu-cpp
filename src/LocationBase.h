@@ -6,7 +6,7 @@
 #define EXAMPLE_LOCATIONBASE_H
 
 #include "CPU.h"
-#include "mylib.h"
+#include "util.h"
 
 class LocationBase {
   public:

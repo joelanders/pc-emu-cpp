@@ -3,10 +3,16 @@
 //
 
 #include "CPU.h"
-#include "mylib.h"
+#include "util.h"
 #include "InstructionFactory.h"
+#include "ArithmeticInstruction.h"
 
-CPU::CPU() {}
+CPU::CPU() {
+    printf("CPU::CPU()\n");
+    // XXX the static initialization trick isn't working in the tests
+    const std::vector<uint8_t> opcodes { 0x00, 0x01, 0x02, 0x03 };
+    InstructionFactory::register_opcodes(opcodes, ArithmeticInstruction::create_method);
+}
 
 std::ostream&
 operator<<(std::ostream& os, const CPU& cpu) {
@@ -54,6 +60,11 @@ CPU::set_byte(size_t address, uint8_t value) {
 void
 CPU::set_bytes(size_t start, std::string hex_string) {
     return memory.set_bytes(start, hex_string);
+}
+
+void
+CPU::set_bytes(size_t start, std::vector<uint8_t> bytes) {
+    return memory.set_bytes(start, bytes);
 }
 
 bool

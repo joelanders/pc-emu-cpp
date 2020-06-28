@@ -6,7 +6,7 @@
 #define EXAMPLE_REGISTERLOCATION_H
 
 #include "LocationBase.h"
-#include "mylib.h"
+#include "util.h"
 
 class RegisterLocation : public LocationBase {
   public:
@@ -17,7 +17,6 @@ class RegisterLocation : public LocationBase {
 
     virtual void print();
 
-  private:
     Register reg;
 };
 

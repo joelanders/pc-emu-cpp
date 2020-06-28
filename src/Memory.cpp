@@ -46,12 +46,25 @@ Memory::set_bytes(size_t start, std::string hex_string) {
     size_t i = start;
     for (auto& hex_digit : hexes) {
         std::stringstream ss;
-        std::cout << "fuck: " << hex_digit << std::endl;
         uint8_t byte = strtol(hex_digit.c_str(), NULL, 16);
         bytes[i] = byte;
         ++i;
     }
 }
+
+void
+Memory::set_bytes(size_t start, std::vector<uint8_t> new_bytes) {
+    if (start + new_bytes.size() > bytes.size()) {
+        bytes.resize(start + new_bytes.size());
+    }
+
+    size_t i = start;
+    for (auto& byte : new_bytes) {
+        bytes[i] = byte;
+        ++i;
+    }
+}
+
 
 void
 Memory::set_zero_bytes(size_t start, size_t len) {

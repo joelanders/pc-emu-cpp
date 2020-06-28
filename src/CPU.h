@@ -7,7 +7,7 @@
 
 #include "Memory.h"
 #include "Registers.h"
-#include "mylib.h"
+#include "util.h"
 
 class CPU {
   public:
@@ -21,6 +21,7 @@ class CPU {
 
     void set_byte(size_t address, uint8_t value);
     void set_bytes(size_t start, std::string hex_string);
+    void set_bytes(size_t start, std::vector<uint8_t> bytes);
 
     bool set_register(Width w, Register reg, uint32_t value);
 

@@ -6,7 +6,7 @@
 #define EXAMPLE_MEMORYLOCATION_H
 
 #include "LocationBase.h"
-#include "mylib.h"
+#include "util.h"
 
 class MemoryLocation : public LocationBase {
   public:

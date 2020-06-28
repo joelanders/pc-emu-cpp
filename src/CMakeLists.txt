@@ -2,11 +2,17 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(ClangFormat)
 clangformat_setup(
         main.cpp
-        mylib.cpp
-        mylib.h
 )
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+file(GLOB SRC_FILES
+    "*.h"
+    "*.cpp"
+)
+
+message( ${PROJECT_SOURCE_DIR} )
+message( "${SRC_FILES}" )
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -20,18 +26,21 @@ if (Boost_FOUND)
 endif ()
 
 # static library
-add_library(mylib_static STATIC mylib.cpp)
+# add_library(mylib_static STATIC mylib.cpp CPU.cpp)
+add_library(mylib_static STATIC main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h util.cpp util.h)
 target_include_directories(
         mylib_static
-        PRIVATE
+        PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}
+        PRIVATE
+        ${PROJECT_BINARY_DIR}
 )
 
 # shared library
 add_library(mylib_shared SHARED mylib.cpp)
 
 # compile main executable
-add_executable(main.x main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h)
+add_executable(main.x main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h util.cpp util.h)
 target_include_directories(
         main.x
         PRIVATE

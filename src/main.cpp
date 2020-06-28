@@ -1,10 +1,8 @@
 #include <cstdio>
 #include <iostream>
 
-#include "ArithmeticInstruction.h"
-#include "InstructionFactory.h"
 #include "config.h"
-#include "mylib.h"
+#include "CPU.h"
 
 int
 main(int argc, char** argv) {
