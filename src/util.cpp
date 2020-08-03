@@ -66,6 +66,18 @@ print_width(Width w) {
     }
 }
 
+size_t
+width_to_size(Width w) {
+    switch (w) {
+    case U8:
+        return 1;
+    case U16:
+        return 2;
+    case U32:
+        return 4;
+    }
+}
+
 void
 print_register(Register r) {
     switch (r) {

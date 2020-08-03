@@ -12,6 +12,11 @@ Memory::set_byte(size_t address, uint8_t value) {
         bytes.resize(address + 1);
     }
 
+    std::cout << "mem set addy ";
+    print_quad_in_hex(address);
+    std::cout << "to value ";
+    print_quad_in_hex(value);
+    printf("\n");
     bytes[address] = value;
 }
 
@@ -20,6 +25,12 @@ Memory::get_byte(size_t address) {
     if (address + 1 > bytes.size()) {
         bytes.resize(address + 1);
     }
+
+    std::cout << "mem get addy ";
+    print_quad_in_hex(address);
+    std::cout << ", value: ";
+    print_quad_in_hex(bytes.at(address));
+    printf("\n");
 
     return bytes.at(address);
 }
@@ -32,6 +43,18 @@ Memory::get_quad(size_t address) {
     value += bytes.at(address + 2) << 16;
     value += bytes.at(address + 3) << 24;
     return value;
+}
+
+void
+Memory::set_quad(size_t start, uint32_t value) {
+    if (start + 4 > bytes.size()) {
+        bytes.resize(start + 4);
+    }
+
+    bytes[start] = value & 0xff;
+    bytes[start + 1] = (value >> 8) & 0xff;
+    bytes[start + 2] = (value >> 16) & 0xff;
+    bytes[start + 3] = (value >> 24) & 0xff;
 }
 
 void

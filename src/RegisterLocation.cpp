@@ -51,7 +51,7 @@ RegisterLocation::read(CPU& cpu, Width w) {
     return value;
 }
 
-bool
+void
 RegisterLocation::write(CPU& cpu, Width w, uint32_t value) {
     std::cout << "RegisterLocation::write() to reg ";
     print_register(reg);

@@ -35,7 +35,7 @@ MemoryLocation::read(CPU& cpu, Width w) {
     return value;
 }
 
-bool
+void
 MemoryLocation::write(CPU& cpu, Width w, uint32_t value) {
     std::cout << "mem loc write() to addy ";
     print_quad_in_hex(address);
@@ -55,7 +55,6 @@ MemoryLocation::write(CPU& cpu, Width w, uint32_t value) {
             cpu.set_byte(address + 3, (value >> 24) & 0xff);
             break;
     }
-    return true;
 }
 
 void

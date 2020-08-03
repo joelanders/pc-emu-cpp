@@ -38,4 +38,7 @@ print_width(Width w);
 void
 print_register(Register r);
 
+size_t
+width_to_size(Width w);
+
 #endif // EXAMPLE_UTIL_H

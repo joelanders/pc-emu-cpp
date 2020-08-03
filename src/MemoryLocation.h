@@ -13,7 +13,7 @@ class MemoryLocation : public LocationBase {
     MemoryLocation(uint32_t address);
     ~MemoryLocation(){};
     virtual uint32_t read(CPU& cpu, Width w);
-    virtual bool write(CPU& cpu, Width w, uint32_t value);
+    virtual void write(CPU& cpu, Width w, uint32_t value);
 
     virtual void print();
 
