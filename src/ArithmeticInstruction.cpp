@@ -37,6 +37,27 @@ ArithmeticInstruction::execute(CPU& cpu) {
         operands.print();
         return add(std::move(operands.G()), std::move(operands.E()), w);
     }
+    case 0x04: {
+        Width w = U8;
+        auto imm = std::make_unique<MemoryLocation>(cpu.get_registers().get_eip());
+        cpu.get_registers().inc_eip();
+        auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax));
+        imm->print();
+        reg->print();
+        return add(std::move(reg), std::move(imm), w);
+    }
+    case 0x05: {
+        Width w = U32;
+        auto imm = std::make_unique<MemoryLocation>(cpu.get_registers().get_eip());
+        cpu.get_registers().inc_eip();
+        cpu.get_registers().inc_eip();
+        cpu.get_registers().inc_eip();
+        cpu.get_registers().inc_eip();
+        auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax));
+        imm->print();
+        reg->print();
+        return add(std::move(reg), std::move(imm), w);
+    }
     }
     return false;
 }
@@ -56,7 +77,7 @@ ArithmeticInstruction::add(std::unique_ptr<LocationBase> dest,
 }
 
 // XXX this isn't working in the tests
-const std::vector<uint8_t> opcodes { 0x00, 0x01, 0x02, 0x03 };
+const std::vector<uint8_t> opcodes { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 };
 
 bool
 ArithmeticInstruction::s_registered =
