@@ -7,6 +7,7 @@
 #include "InstructionFactory.h"
 #include "ArithmeticInstruction.h"
 #include "MemoryInstruction.h"
+#include "BitwiseInstruction.h"
 
 CPU::CPU() {
     printf("CPU::CPU()\n");
@@ -14,8 +15,11 @@ CPU::CPU() {
     const std::vector<uint8_t> opcodes { 0x00, 0x01, 0x02, 0x03 };
     InstructionFactory::register_opcodes(opcodes, ArithmeticInstruction::create_method);
 
-    const std::vector<uint8_t> opcodes2 { 0x06, 0x07 };
+    const std::vector<uint8_t> opcodes2 { 0x06, 0x07, 0x0e, 0x0f};
     InstructionFactory::register_opcodes(opcodes2, MemoryInstruction::create_method);
+
+    const std::vector<uint8_t> opcodes3 { 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d };
+    InstructionFactory::register_opcodes(opcodes2, BitwiseInstruction::create_method);
 }
 
 std::ostream&
@@ -56,6 +60,8 @@ CPU::execute_next_instruction() {
         if (!success) {
             printf("execute() returned false!\n");
         }
+    } else {
+            printf("create() failed!!!\n");
     }
 }
 

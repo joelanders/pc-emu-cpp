@@ -23,6 +23,13 @@ class Registers {
 
     uint32_t get_eip() const { return eip; }
 
+    uint32_t get_ss() const { return ss; }
+    uint32_t get_cs() const { return cs; }
+    uint32_t get_ds() const { return ds; }
+    uint32_t get_es() const { return es; }
+    uint32_t get_fs() const { return fs; }
+    uint32_t get_gs() const { return gs; }
+
     bool set_register(Width w, Register reg, uint32_t value);
     void inc_eip() { ++eip; }
 
@@ -40,6 +47,13 @@ class Registers {
     uint32_t edi;
 
     uint32_t eip;
+
+    uint32_t ss;
+    uint32_t cs;
+    uint32_t ds;
+    uint32_t es;
+    uint32_t fs;
+    uint32_t gs;
 };
 
 

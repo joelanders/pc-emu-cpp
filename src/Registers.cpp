@@ -13,7 +13,13 @@ Registers::Registers() :
      ebp(0),
      esi(0),
      edi(0),
-     eip(0)
+     eip(0),
+     ss(0),
+     cs(0),
+     ds(0),
+     es(0),
+     fs(0),
+     gs(0)
 {}
 
 std::ostream&
@@ -39,6 +45,19 @@ operator<<(std::ostream& os, const Registers& registers) {
 
     os << "\teip: ";
     os << std::setfill('0') << std::setw(8) << std::hex << registers.get_eip() << std::endl;
+
+    os << "\tss: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_ss() << std::endl;
+    os << "\tcs: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_cs() << std::endl;
+    os << "\tds: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_ds() << std::endl;
+    os << "\tes: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_es() << std::endl;
+    os << "\tfs: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_fs() << std::endl;
+    os << "\tgs: ";
+    os << std::setfill('0') << std::setw(8) << std::hex << registers.get_gs() << std::endl;
     return os;
 }
 
@@ -74,6 +93,27 @@ Registers::set_register(Width w, Register reg, uint32_t value) {
         break;
     case Edi:
         edi = value;
+        break;
+    case Eip:
+        eip = value;
+        break;
+    case Ss:
+        ss = value;
+        break;
+    case Cs:
+        cs = value;
+        break;
+    case Ds:
+        ds = value;
+        break;
+    case Es:
+        es = value;
+        break;
+    case Fs:
+        fs = value;
+        break;
+    case Gs:
+        gs = value;
         break;
     }
     return true;
