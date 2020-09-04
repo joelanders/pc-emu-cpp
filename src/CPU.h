@@ -28,8 +28,8 @@ class CPU {
     bool push_on_stack(Width w, uint32_t value);
     std::optional<uint32_t> pop_off_stack(Width w);
 
-    Width current_address_size = U16;  // XXX think about defaults
-    Width current_value_size = U8;     // XXX think about defaults
+    Width current_address_size = U16; // XXX think about defaults
+    Width current_value_size = U8;    // XXX think about defaults
 
   private:
     Registers registers;

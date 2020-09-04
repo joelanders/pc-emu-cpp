@@ -9,8 +9,8 @@
 #include "InstructionFactory.h"
 #include "LocationBase.h"
 #include "MemoryLocation.h"
-#include "RegisterLocation.h"
 #include "Operands.h"
+#include "RegisterLocation.h"
 #include "util.h"
 
 class ArithmeticInstruction : public InstructionBase {

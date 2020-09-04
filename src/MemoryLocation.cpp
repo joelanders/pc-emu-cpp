@@ -15,15 +15,15 @@ uint32_t
 MemoryLocation::read(CPU& cpu, Width w) {
     uint32_t value;
     switch (w) {
-        case U8:
-            value = cpu.get_memory().get_byte(address);
-            break;
-        case U32:
-            value  = cpu.get_memory().get_byte(address);
-            value += cpu.get_memory().get_byte(address + 1) << 8;
-            value += cpu.get_memory().get_byte(address + 2) << 16;
-            value += cpu.get_memory().get_byte(address + 3) << 24;
-            break;
+    case U8:
+        value = cpu.get_memory().get_byte(address);
+        break;
+    case U32:
+        value = cpu.get_memory().get_byte(address);
+        value += cpu.get_memory().get_byte(address + 1) << 8;
+        value += cpu.get_memory().get_byte(address + 2) << 16;
+        value += cpu.get_memory().get_byte(address + 3) << 24;
+        break;
     }
     std::cout << "mem loc read() from ";
     print_quad_in_hex(address);
@@ -45,15 +45,15 @@ MemoryLocation::write(CPU& cpu, Width w, uint32_t value) {
     print_width(w);
     printf("\n");
     switch (w) {
-        case U8:
-            cpu.set_byte(address, value % 256);
-            break;
-        case U32:
-            cpu.set_byte(address,     value         & 0xff);
-            cpu.set_byte(address + 1, (value >> 8)  & 0xff);  // XXX resize mem if needed?
-            cpu.set_byte(address + 2, (value >> 16) & 0xff);
-            cpu.set_byte(address + 3, (value >> 24) & 0xff);
-            break;
+    case U8:
+        cpu.set_byte(address, value % 256);
+        break;
+    case U32:
+        cpu.set_byte(address, value & 0xff);
+        cpu.set_byte(address + 1, (value >> 8) & 0xff); // XXX resize mem if needed?
+        cpu.set_byte(address + 2, (value >> 16) & 0xff);
+        cpu.set_byte(address + 3, (value >> 24) & 0xff);
+        break;
     }
 }
 

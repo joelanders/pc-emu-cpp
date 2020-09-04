@@ -26,7 +26,7 @@ void
 print_quad_in_hex(uint32_t quad);
 
 
-enum Register { Eax, Ecx, Edx, Ebx,  Esp, Ebp, Esi, Edi,  Eip, Ss, Cs, Ds, Es, Fs, Gs };
+enum Register { Eax, Ecx, Edx, Ebx, Esp, Ebp, Esi, Edi, Eip, Ss, Cs, Ds, Es, Fs, Gs };
 enum Width { U8, U16, U32 };
 
 Register

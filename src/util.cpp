@@ -111,4 +111,3 @@ print_register(Register r) {
     }
     printf("XXXXXXX BAD (print_register) XXXXXXX");
 }
-

@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <iostream>
 
-#include "config.h"
 #include "CPU.h"
+#include "config.h"
 
 int
 main(int argc, char** argv) {

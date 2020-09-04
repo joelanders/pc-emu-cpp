@@ -3,22 +3,22 @@
 //
 
 #include "CPU.h"
-#include "util.h"
-#include "InstructionFactory.h"
 #include "ArithmeticInstruction.h"
-#include "MemoryInstruction.h"
 #include "BitwiseInstruction.h"
+#include "InstructionFactory.h"
+#include "MemoryInstruction.h"
+#include "util.h"
 
 CPU::CPU() {
     printf("CPU::CPU()\n");
     // XXX the static initialization trick isn't working in the tests
-    const std::vector<uint8_t> opcodes { 0x00, 0x01, 0x02, 0x03 };
+    const std::vector<uint8_t> opcodes{0x00, 0x01, 0x02, 0x03};
     InstructionFactory::register_opcodes(opcodes, ArithmeticInstruction::create_method);
 
-    const std::vector<uint8_t> opcodes2 { 0x06, 0x07, 0x0e, 0x0f};
+    const std::vector<uint8_t> opcodes2{0x06, 0x07, 0x0e, 0x0f};
     InstructionFactory::register_opcodes(opcodes2, MemoryInstruction::create_method);
 
-    const std::vector<uint8_t> opcodes3 { 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d };
+    const std::vector<uint8_t> opcodes3{0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d};
     InstructionFactory::register_opcodes(opcodes2, BitwiseInstruction::create_method);
 }
 
@@ -61,7 +61,7 @@ CPU::execute_next_instruction() {
             printf("execute() returned false!\n");
         }
     } else {
-            printf("create() failed!!!\n");
+        printf("create() failed!!!\n");
     }
 }
 
@@ -95,25 +95,25 @@ CPU::push_on_stack(Width w, uint32_t value) {
     print_quad_in_hex(new_esp);
     printf("\n");
     switch (w) {
-        case U8:
-            memory.set_byte(new_esp, value);
-            break;
-        case U16:
-            throw std::runtime_error("u16 not implemented");
-        case U32:
-            memory.set_quad(new_esp, value);
-            break;
-        default:
-            throw std::runtime_error("very bad!");
+    case U8:
+        memory.set_byte(new_esp, value);
+        break;
+    case U16:
+        throw std::runtime_error("u16 not implemented");
+    case U32:
+        memory.set_quad(new_esp, value);
+        break;
+    default:
+        throw std::runtime_error("very bad!");
     }
-    registers.set_register(U32, Esp, new_esp);  // XXX hard-coding 32-bit here
+    registers.set_register(U32, Esp, new_esp); // XXX hard-coding 32-bit here
     return true;
 }
 
-std::optional<uint32_t> 
+std::optional<uint32_t>
 CPU::pop_off_stack(Width w) {
     uint32_t old_esp = registers.get_esp();
-    uint32_t new_esp = old_esp + width_to_size(w);  // XXX think about what overflow behavior we want
+    uint32_t new_esp = old_esp + width_to_size(w); // XXX think about what overflow behavior we want
     if (new_esp > memory.get_size()) {
         return std::nullopt;
     }
@@ -122,17 +122,17 @@ CPU::pop_off_stack(Width w) {
     printf("\n");
     uint32_t value;
     switch (w) {
-        case U8:
-            value = memory.get_byte(old_esp);
-            break;
-        case U16:
-            throw std::runtime_error("u16 not implemented");
-        case U32:
-            value = memory.get_quad(old_esp);
-            break;
-        default:
-            throw std::runtime_error("very bad!");
+    case U8:
+        value = memory.get_byte(old_esp);
+        break;
+    case U16:
+        throw std::runtime_error("u16 not implemented");
+    case U32:
+        value = memory.get_quad(old_esp);
+        break;
+    default:
+        throw std::runtime_error("very bad!");
     }
-    registers.set_register(U32, Esp, new_esp);  // XXX hard-coding 32-bit here
+    registers.set_register(U32, Esp, new_esp); // XXX hard-coding 32-bit here
     return value;
 }

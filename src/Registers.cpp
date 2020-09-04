@@ -4,23 +4,9 @@
 
 #include "Registers.h"
 
-Registers::Registers() :
-     eax(0),
-     ecx(0),
-     edx(0),
-     ebx(0),
-     esp(0),
-     ebp(0),
-     esi(0),
-     edi(0),
-     eip(0),
-     ss(0),
-     cs(0),
-     ds(0),
-     es(0),
-     fs(0),
-     gs(0)
-{}
+Registers::Registers()
+    : eax(0), ecx(0), edx(0), ebx(0), esp(0), ebp(0), esi(0), edi(0), eip(0), ss(0), cs(0), ds(0), es(0), fs(0), gs(0) {
+}
 
 std::ostream&
 operator<<(std::ostream& os, const Registers& registers) {
@@ -122,21 +108,21 @@ Registers::set_register(Width w, Register reg, uint32_t value) {
 uint32_t
 Registers::get_register_by_index(size_t index, Width w) {
     switch (index) {
-        case 0b000:
-            return eax;
-        case 0b001:
-            return ecx;
-        case 0b010:
-            return edx;
-        case 0b011:
-            return ebx;
-        case 0b100:
-            return esp;
-        case 0b101:
-            return ebp;
-        case 0b110:
-            return esi;
-        case 0b111:
-            return edi;
+    case 0b000:
+        return eax;
+    case 0b001:
+        return ecx;
+    case 0b010:
+        return edx;
+    case 0b011:
+        return ebx;
+    case 0b100:
+        return esp;
+    case 0b101:
+        return ebp;
+    case 0b110:
+        return esi;
+    case 0b111:
+        return edi;
     }
 }

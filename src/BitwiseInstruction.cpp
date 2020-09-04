@@ -58,17 +58,12 @@ BitwiseInstruction::execute(CPU& cpu) {
 }
 
 bool
-BitwiseInstruction::do_or(std::unique_ptr<LocationBase> dest,
-                          std::unique_ptr<LocationBase> src,
-                          Width w) {
+BitwiseInstruction::do_or(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w) {
     dest->write(cpu, w, dest->read(cpu, w) | src->read(cpu, w));
     return true;
 }
 
-const std::vector<uint8_t> opcodes { 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d };
+const std::vector<uint8_t> opcodes{0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d};
 
-bool
-BitwiseInstruction::s_registered =
-    InstructionFactory::register_opcodes(opcodes,
-                                         BitwiseInstruction::create_method);
-
+bool BitwiseInstruction::s_registered =
+    InstructionFactory::register_opcodes(opcodes, BitwiseInstruction::create_method);

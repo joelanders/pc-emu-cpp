@@ -69,18 +69,13 @@ ArithmeticInstruction::execute(CPU& cpu) {
 // r_rm,    02, 03,  2a, 2b,  3a, 3b,  12, 13,  1a, 1b
 
 bool
-ArithmeticInstruction::add(std::unique_ptr<LocationBase> dest,
-                           std::unique_ptr<LocationBase> src,
-                           Width w) {
+ArithmeticInstruction::add(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w) {
     dest->write(cpu, w, dest->read(cpu, w) + src->read(cpu, w));
     return true;
 }
 
 // XXX this isn't working in the tests
-const std::vector<uint8_t> opcodes { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 };
+const std::vector<uint8_t> opcodes{0x00, 0x01, 0x02, 0x03, 0x04, 0x05};
 
-bool
-ArithmeticInstruction::s_registered =
-    InstructionFactory::register_opcodes(opcodes,
-                                         ArithmeticInstruction::create_method);
-
+bool ArithmeticInstruction::s_registered =
+    InstructionFactory::register_opcodes(opcodes, ArithmeticInstruction::create_method);

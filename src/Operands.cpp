@@ -33,16 +33,16 @@ Operands
 decode_modrm(CPU& cpu) {
     uint8_t modrm = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
     cpu.get_registers().inc_eip();
-    std::cout << "MOD / REG / RM: " << std::bitset<8>(modrm)  << std::endl;
+    std::cout << "MOD / REG / RM: " << std::bitset<8>(modrm) << std::endl;
 
     uint8_t mod = (modrm & 0b11000000) >> 6;
     uint8_t reg = (modrm & 0b00111000) >> 3;
-    uint8_t rm  = (modrm & 0b00000111);
+    uint8_t rm = (modrm & 0b00000111);
 
     if (mod == 0b11) {
         std::cout << "-- register-to-register mode --" << std::endl;
         auto operands = Operands(std::make_unique<RegisterLocation>(index_to_register(rm)),
-                        std::make_unique<RegisterLocation>(index_to_register(reg)));
+                                 std::make_unique<RegisterLocation>(index_to_register(reg)));
         return operands;
     }
 
@@ -53,7 +53,7 @@ decode_modrm(CPU& cpu) {
             uint8_t disp8 = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
             cpu.get_registers().inc_eip();
             return Operands(std::make_unique<MemoryLocation>(address + disp8),
-                                  std::make_unique<RegisterLocation>(index_to_register(reg)));
+                            std::make_unique<RegisterLocation>(index_to_register(reg)));
         }
         if (mod == 0b10) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
@@ -86,7 +86,7 @@ decode_modrm(CPU& cpu) {
 
     uint8_t scale = (sib & 0b11000000) >> 6;
     uint8_t index = (sib & 0b00111000) >> 3;
-    uint8_t base  = (sib & 0b00000111);
+    uint8_t base = (sib & 0b00000111);
 
     uint32_t disp = 0;
     if (mod == 0b00) {
@@ -123,4 +123,3 @@ decode_modrm(CPU& cpu) {
     return Operands(std::make_unique<MemoryLocation>(disp + scaled_index + base_value),
                     std::make_unique<RegisterLocation>(index_to_register(reg)));
 }
-

@@ -34,7 +34,7 @@ MemoryInstruction::execute(CPU& cpu) {
     }
 }
 
-const std::vector<uint8_t> opcodes { 0x06, 0x07 , 0x0e, 0x0f};
+const std::vector<uint8_t> opcodes{0x06, 0x07, 0x0e, 0x0f};
 
 // bool
 // MemoryInstruction::s_registered =
