@@ -27,9 +27,14 @@ print_quad_in_hex(uint32_t quad) {
     printf("%08x ", quad);
 }
 
+void
+print_double_in_hex(uint32_t dub) {
+    printf("%04x ", dub);
+}
+
 Register
 index_to_register(uint8_t index) {
-    printf("register index is: %02x\n", index);
+    // printf("register index is: %02x\n", index);
     switch (index) {
     case 0b000:
         return Eax;
@@ -47,6 +52,30 @@ index_to_register(uint8_t index) {
         return Esi;
     case 0b111:
         return Edi;
+    }
+    printf("XXXXXXX BAD (index_to_register) XXXXXXX");
+}
+
+uint8_t
+register_to_index(Register reg) {
+    // printf("register index is: %02x\n", index);
+    switch (reg) {
+    case Eax:
+        return 0;
+    case Ecx:
+        return 1;
+    case Edx:
+        return 2;
+    case Ebx:
+        return 3;
+    case Esp:
+        return 4;
+    case Ebp:
+        return 5;
+    case Esi:
+        return 6;
+    case Edi:
+        return 7;
     }
     printf("XXXXXXX BAD (index_to_register) XXXXXXX");
 }
@@ -79,35 +108,92 @@ width_to_size(Width w) {
 }
 
 void
-print_register(Register r) {
-    switch (r) {
-    case Eax:
-        printf("Eax ");
-        return;
-    case Ecx:
-        printf("Ecx ");
-        return;
-    case Edx:
-        printf("Edx ");
-        return;
-    case Ebx:
-        printf("Ebx ");
-        return;
-    case Esp:
-        printf("Esp ");
-        return;
-    case Ebp:
-        printf("Ebp ");
-        return;
-    case Esi:
-        printf("Esi ");
-        return;
-    case Edi:
-        printf("Edi ");
-        return;
-    case Eip:
-        printf("Eip ");
-        return;
+print_register(Register r, Width wid) {
+    switch (wid) {
+    case U8:
+        switch (r) {
+        case Eax:
+            printf("al");
+            return;
+        case Ecx:
+            printf("cl");
+            return;
+        case Edx:
+            printf("dl");
+            return;
+        case Ebx:
+            printf("bl");
+            return;
+        case Esp:
+            printf("spl");
+            return;
+        case Ebp:
+            printf("bpl");
+            return;
+        case Esi:
+            printf("sil");
+            return;
+        case Edi:
+            printf("dil");
+            return;
+        }
+    case U16:
+        switch (r) {
+        case Eax:
+            printf("ax");
+            return;
+        case Ecx:
+            printf("cx");
+            return;
+        case Edx:
+            printf("dx");
+            return;
+        case Ebx:
+            printf("bx");
+            return;
+        case Esp:
+            printf("sp");
+            return;
+        case Ebp:
+            printf("bp");
+            return;
+        case Esi:
+            printf("si");
+            return;
+        case Edi:
+            printf("di");
+            return;
+        }
+    case U32:
+        switch (r) {
+        case Eax:
+            printf("eax");
+            return;
+        case Ecx:
+            printf("ecx");
+            return;
+        case Edx:
+            printf("edx");
+            return;
+        case Ebx:
+            printf("ebx");
+            return;
+        case Esp:
+            printf("esp");
+            return;
+        case Ebp:
+            printf("ebp");
+            return;
+        case Esi:
+            printf("esi");
+            return;
+        case Edi:
+            printf("edi");
+            return;
+        case Eip:
+            printf("eip");
+            return;
+        }
     }
     printf("XXXXXXX BAD (print_register) XXXXXXX");
 }

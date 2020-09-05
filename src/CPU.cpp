@@ -11,6 +11,8 @@
 
 CPU::CPU() {
     printf("CPU::CPU()\n");
+    // registers.set_register(U32, Esp, memory.get_size() - 1);
+    // registers.set_register(U32, Ebp, memory.get_size() - 1);
     // XXX the static initialization trick isn't working in the tests
     const std::vector<uint8_t> opcodes{0x00, 0x01, 0x02, 0x03};
     InstructionFactory::register_opcodes(opcodes, ArithmeticInstruction::create_method);

@@ -58,7 +58,7 @@ MemoryLocation::write(CPU& cpu, Width w, uint32_t value) {
 }
 
 void
-MemoryLocation::print() {
+MemoryLocation::print(Width w) {
     std::cout << "MemoryLocation: ";
     print_quad_in_hex(address);
     std::cout << " ";

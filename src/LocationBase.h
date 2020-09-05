@@ -15,7 +15,7 @@ class LocationBase {
     virtual uint32_t read(CPU& cpu, Width w) = 0;
     virtual void write(CPU& cpu, Width w, uint32_t value) = 0;
 
-    virtual void print() = 0;
+    virtual void print(Width w) = 0;
 };
 
 

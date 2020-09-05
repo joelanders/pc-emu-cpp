@@ -10,14 +10,15 @@
 
 class RegisterLocation : public LocationBase {
   public:
-    RegisterLocation(Register reg);
+    RegisterLocation(Register new_reg);
     ~RegisterLocation(){};
     virtual uint32_t read(CPU& cpu, Width w);
     virtual void write(CPU& cpu, Width w, uint32_t value);
 
-    virtual void print();
+    virtual void print(Width w);
 
     Register reg;
+    Width wid;
 };
 
 

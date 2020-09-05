@@ -8,6 +8,12 @@ Memory::Memory() : bytes(0) {}
 
 void
 Memory::set_byte(size_t address, uint8_t value) {
+    std::cout << "MEMSET offset: ";
+    print_quad_in_hex(address);
+    std::cout << "value: ";
+    print_byte_in_hex(address);
+    std::cout << std::endl;
+
     if (address + 1 > bytes.size()) {
         bytes.resize(address + 1);
     }
@@ -47,6 +53,12 @@ Memory::get_quad(size_t address) {
 
 void
 Memory::set_quad(size_t start, uint32_t value) {
+    std::cout << "MEMSETBS offset: ";
+    print_quad_in_hex(start);
+    std::cout << "value: ";
+    print_quad_in_hex(value);
+    std::cout << std::endl;
+
     if (start + 4 > bytes.size()) {
         bytes.resize(start + 4);
     }
@@ -59,6 +71,9 @@ Memory::set_quad(size_t start, uint32_t value) {
 
 void
 Memory::set_bytes(size_t start, std::string hex_string) {
+    std::cout << "MEMSETBS offset: ";
+    print_quad_in_hex(start);
+    std::cout << "value: " << hex_string << std::endl;
     std::vector<std::string> hexes;
     boost::split(hexes, hex_string, boost::is_any_of(" "));
 
@@ -77,15 +92,22 @@ Memory::set_bytes(size_t start, std::string hex_string) {
 
 void
 Memory::set_bytes(size_t start, std::vector<uint8_t> new_bytes) {
+    std::cout << "MEMSETBS offset: ";
+    print_quad_in_hex(start);
+    std::cout << "value: ";
+
     if (start + new_bytes.size() > bytes.size()) {
         bytes.resize(start + new_bytes.size());
     }
 
     size_t i = start;
     for (auto& byte : new_bytes) {
+        print_byte_in_hex(byte);
+        printf(" ");
         bytes[i] = byte;
         ++i;
     }
+    std::cout << std::endl;
 }
 
 

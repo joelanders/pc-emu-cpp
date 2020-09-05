@@ -50,56 +50,70 @@ operator<<(std::ostream& os, const Registers& registers) {
 // XXX handle widths
 bool
 Registers::set_register(Width w, Register reg, uint32_t value) {
-    std::cout << "Registers::set_register() to reg " << reg;
-    std::cout << " value ";
-    print_quad_in_hex(value);
+    uint32_t mask;
+    switch (w) {
+    case U8:
+        mask = 0xff;
+        break;
+    case U16:
+        mask = 0xffff;
+        break;
+    case U32:
+        mask = 0xffffffff;
+        break;
+    }
+
+    // XXX is this the right place to chomp the extra bits? make caller do it?
+    std::cout << "REGSET offset: " << std::to_string(register_to_index(reg));
+    std::cout << " value: ";
+    print_quad_in_hex(value & mask);
     printf("\n");
 
     switch (reg) {
     case Eax:
-        eax = value;
+        eax = (eax & ~mask) | (value & mask);
         break;
     case Ecx:
-        ecx = value;
+        ecx = (ecx & ~mask) | (value & mask);
         break;
     case Edx:
-        edx = value;
+        edx = (edx & ~mask) | (value & mask);
         break;
     case Ebx:
-        ebx = value;
+        ebx = (ebx & ~mask) | (value & mask);
         break;
     case Esp:
-        esp = value;
+        esp = (esp & ~mask) | (value & mask);
         break;
     case Ebp:
-        ebp = value;
+        ebp = (ebp & ~mask) | (value & mask);
         break;
     case Esi:
-        esi = value;
+        esi = (esi & ~mask) | (value & mask);
         break;
     case Edi:
-        edi = value;
+        edi = (edi & ~mask) | (value & mask);
         break;
     case Eip:
-        eip = value;
+        eip = (eip & ~mask) | (value & mask);
         break;
     case Ss:
-        ss = value;
+        ss = (ss & ~mask) | (value & mask);
         break;
     case Cs:
-        cs = value;
+        cs = (cs & ~mask) | (value & mask);
         break;
     case Ds:
-        ds = value;
+        ds = (ds & ~mask) | (value & mask);
         break;
     case Es:
-        es = value;
+        es = (es & ~mask) | (value & mask);
         break;
     case Fs:
-        fs = value;
+        fs = (fs & ~mask) | (value & mask);
         break;
     case Gs:
-        gs = value;
+        gs = (gs & ~mask) | (value & mask);
         break;
     }
     return true;
@@ -107,22 +121,35 @@ Registers::set_register(Width w, Register reg, uint32_t value) {
 
 uint32_t
 Registers::get_register_by_index(size_t index, Width w) {
+    uint32_t mask;
+    switch (w) {
+    case U8:
+        mask = 0xff;
+        break;
+    case U16:
+        mask = 0xffff;
+        break;
+    case U32:
+        mask = 0xffffffff;
+        break;
+    }
+
     switch (index) {
     case 0b000:
-        return eax;
+        return eax & mask;
     case 0b001:
-        return ecx;
+        return ecx & mask;
     case 0b010:
-        return edx;
+        return edx & mask;
     case 0b011:
-        return ebx;
+        return ebx & mask;
     case 0b100:
-        return esp;
+        return esp & mask;
     case 0b101:
-        return ebp;
+        return ebp & mask;
     case 0b110:
-        return esi;
+        return esi & mask;
     case 0b111:
-        return edi;
+        return edi & mask;
     }
 }

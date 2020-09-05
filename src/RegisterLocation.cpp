@@ -6,7 +6,7 @@
 
 RegisterLocation::RegisterLocation(Register new_reg) {
     std::cout << "RegisterLocation::RegisterLocation(): ";
-    print_register(new_reg);
+    // print_register(new_reg, U8);
     printf("\n");
     reg = new_reg;
 }
@@ -42,11 +42,11 @@ RegisterLocation::read(CPU& cpu, Width w) {
     }
 
     std::cout << "RegisterLocation::read() from reg ";
-    print_register(reg);
+    print_register(reg, w);
     std::cout << " value ";
     print_quad_in_hex(value);
     std::cout << " width ";
-    print_width(w);
+    print_width(wid);
     printf("\n");
     return value;
 }
@@ -54,19 +54,19 @@ RegisterLocation::read(CPU& cpu, Width w) {
 void
 RegisterLocation::write(CPU& cpu, Width w, uint32_t value) {
     std::cout << "RegisterLocation::write() to reg ";
-    print_register(reg);
+    print_register(reg, w);
     std::cout << " value ";
     print_quad_in_hex(value);
     std::cout << " width ";
-    print_width(w);
+    print_width(wid);
     printf("\n");
 
     return cpu.set_register(w, reg, value);
 }
 
 void
-RegisterLocation::print() {
+RegisterLocation::print(Width w) {
     std::cout << "RegisterLocation: ";
-    print_register(reg);
+    print_register(reg, w);
     std::cout << " ";
 }

@@ -24,6 +24,7 @@ class Memory {
     void set_zero_bytes(size_t start, size_t len); // XXX how to type-enforce len vs end
     size_t get_size() const { return bytes.size(); };
     const std::vector<uint8_t>& get_bytes() const { return bytes; };
+    void set_size(uint32_t mem_size) { bytes.resize(mem_size); };
 
   private:
     std::vector<uint8_t> bytes;

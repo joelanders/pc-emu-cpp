@@ -42,8 +42,8 @@ ArithmeticInstruction::execute(CPU& cpu) {
         auto imm = std::make_unique<MemoryLocation>(cpu.get_registers().get_eip());
         cpu.get_registers().inc_eip();
         auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax));
-        imm->print();
-        reg->print();
+        imm->print(w);
+        reg->print(w);
         return add(std::move(reg), std::move(imm), w);
     }
     case 0x05: {
@@ -54,8 +54,8 @@ ArithmeticInstruction::execute(CPU& cpu) {
         cpu.get_registers().inc_eip();
         cpu.get_registers().inc_eip();
         auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax));
-        imm->print();
-        reg->print();
+        imm->print(w);
+        reg->print(w);
         return add(std::move(reg), std::move(imm), w);
     }
     }

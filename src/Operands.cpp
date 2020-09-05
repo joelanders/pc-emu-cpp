@@ -19,10 +19,10 @@ Operands::G() {
 void
 Operands::print() {
     std::cout << "E: ";
-    e->print();
+    e->print(U32);
     printf("\n");
     std::cout << "G: ";
-    g->print();
+    g->print(U32);  // XXX register should know its width
     printf("\n");
 }
 
