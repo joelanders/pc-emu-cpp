@@ -11,7 +11,7 @@ Memory::set_byte(size_t address, uint8_t value) {
     std::cout << "MEMSET offset: ";
     print_quad_in_hex(address);
     std::cout << "value: ";
-    print_byte_in_hex(address);
+    print_byte_in_hex(value);
     std::cout << std::endl;
 
     if (address + 1 > bytes.size()) {
@@ -53,7 +53,7 @@ Memory::get_quad(size_t address) {
 
 void
 Memory::set_quad(size_t start, uint32_t value) {
-    std::cout << "MEMSETBS offset: ";
+    std::cout << "MEMSET offset: ";
     print_quad_in_hex(start);
     std::cout << "value: ";
     print_quad_in_hex(value);

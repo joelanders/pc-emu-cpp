@@ -11,33 +11,33 @@ BitwiseInstruction::execute(CPU& cpu) {
     switch (opcode) {
     case 0x08: {
         Width w = U8;
-        auto operands = decode_modrm(cpu);
-        operands.print();
+        auto operands = decode_modrm(cpu, w);
+        operands.print(w);
         return do_or(std::move(operands.E()), std::move(operands.G()), w);
     }
     case 0x09: {
         Width w = U32;
-        auto operands = decode_modrm(cpu);
-        operands.print();
+        auto operands = decode_modrm(cpu, w);
+        operands.print(w);
         return do_or(std::move(operands.E()), std::move(operands.G()), w);
     }
     case 0x0a: {
         Width w = U8;
-        auto operands = decode_modrm(cpu);
-        operands.print();
+        auto operands = decode_modrm(cpu, w);
+        operands.print(w);
         return do_or(std::move(operands.G()), std::move(operands.E()), w);
     }
     case 0x0b: {
         Width w = U32;
-        auto operands = decode_modrm(cpu);
-        operands.print();
+        auto operands = decode_modrm(cpu, w);
+        operands.print(w);
         return do_or(std::move(operands.G()), std::move(operands.E()), w);
     }
     case 0x0c: {
         Width w = U8;
         auto imm = std::make_unique<MemoryLocation>(cpu.get_registers().get_eip());
         cpu.get_registers().inc_eip();
-        auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax));
+        auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax, w));
         imm->print(w);
         reg->print(w);
         return do_or(std::move(reg), std::move(imm), w);
@@ -49,7 +49,7 @@ BitwiseInstruction::execute(CPU& cpu) {
         cpu.get_registers().inc_eip();
         cpu.get_registers().inc_eip();
         cpu.get_registers().inc_eip();
-        auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax));
+        auto reg = std::make_unique<RegisterLocation>(index_to_register(Eax, w));
         imm->print(w);
         reg->print(w);
         return do_or(std::move(reg), std::move(imm), w);
@@ -59,7 +59,11 @@ BitwiseInstruction::execute(CPU& cpu) {
 
 bool
 BitwiseInstruction::do_or(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w) {
-    dest->write(cpu, w, dest->read(cpu, w) | src->read(cpu, w));
+    uint32_t a = dest->read(cpu, w);
+    uint32_t b = src->read(cpu, w);
+    uint32_t c = a | b;
+    dest->write(cpu, w, c);
+    cpu.get_registers().update_status_flags(a, b, c, w, false, true, true);
     return true;
 }
 

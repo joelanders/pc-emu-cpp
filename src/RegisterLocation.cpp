@@ -14,32 +14,7 @@ RegisterLocation::RegisterLocation(Register new_reg) {
 uint32_t
 RegisterLocation::read(CPU& cpu, Width w) {
     uint32_t value;
-    switch (reg) {
-    case Eax:
-        value = cpu.get_registers().get_eax();
-        break;
-    case Ecx:
-        value = cpu.get_registers().get_ecx();
-        break;
-    case Edx:
-        value = cpu.get_registers().get_edx();
-        break;
-    case Ebx:
-        value = cpu.get_registers().get_ebx();
-        break;
-    case Esp:
-        value = cpu.get_registers().get_esp();
-        break;
-    case Ebp:
-        value = cpu.get_registers().get_ebp();
-        break;
-    case Esi:
-        value = cpu.get_registers().get_esi();
-        break;
-    case Edi:
-        value = cpu.get_registers().get_edi();
-        break;
-    }
+    value = cpu.get_registers().get_register_by_index(register_to_index(reg, w), w);
 
     std::cout << "RegisterLocation::read() from reg ";
     print_register(reg, w);

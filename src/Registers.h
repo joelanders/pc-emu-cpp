@@ -30,7 +30,24 @@ class Registers {
     uint32_t get_fs() const { return fs; }
     uint32_t get_gs() const { return gs; }
 
-    bool set_register(Width w, Register reg, uint32_t value);
+    bool get_cf() const { return cf; }
+    bool get_pf() const { return pf; }
+    bool get_af() const { return af; }
+    bool get_zf() const { return zf; }
+    bool get_sf() const { return sf; }
+    bool get_of() const { return of; }
+
+    void set_cf(bool new_val) { cf = new_val; }
+    void set_pf(bool new_val) { pf = new_val; }
+    void set_af(bool new_val) { af = new_val; }
+    void set_zf(bool new_val) { zf = new_val; }
+    void set_sf(bool new_val) { sf = new_val; }
+    void set_of(bool new_val) { of = new_val; }
+
+    void update_status_flags(uint32_t a, uint32_t b, uint32_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf);
+    void print_status_flags();
+    bool set_register(Width w, Register reg, uint32_t value, bool silent=false);
+    bool set_segment_register(Register reg, uint32_t value);
     void inc_eip() { ++eip; }
 
     uint32_t get_register_by_index(size_t index, Width w);
@@ -54,6 +71,13 @@ class Registers {
     uint32_t es;
     uint32_t fs;
     uint32_t gs;
+
+    bool cf;
+    bool pf;
+    bool af;
+    bool zf;
+    bool sf;
+    bool of;
 };
 
 

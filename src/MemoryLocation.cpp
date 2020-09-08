@@ -49,10 +49,11 @@ MemoryLocation::write(CPU& cpu, Width w, uint32_t value) {
         cpu.set_byte(address, value % 256);
         break;
     case U32:
-        cpu.set_byte(address, value & 0xff);
-        cpu.set_byte(address + 1, (value >> 8) & 0xff); // XXX resize mem if needed?
-        cpu.set_byte(address + 2, (value >> 16) & 0xff);
-        cpu.set_byte(address + 3, (value >> 24) & 0xff);
+        cpu.get_memory().set_quad(address, value);
+        // cpu.set_byte(address, value & 0xff);
+        // cpu.set_byte(address + 1, (value >> 8) & 0xff); // XXX resize mem if needed?
+        // cpu.set_byte(address + 2, (value >> 16) & 0xff);
+        // cpu.set_byte(address + 3, (value >> 24) & 0xff);
         break;
     }
 }

@@ -65,11 +65,11 @@ TEST(Push, es) {
     CPU cpu;
     std::vector<uint8_t> bytes = {0x06};
     cpu.set_bytes(0x00, bytes);
-    cpu.set_register(U16, Esp, 0x11);
-    cpu.set_register(U8, Es, 0x69);
+    cpu.set_register(U32, Esp, 0x11);
+    cpu.set_register(U32, Es, 0x69707172);
     cpu.execute_next_instruction();
-    EXPECT_EQ(0x69, cpu.get_memory().get_byte(0x10));
-    EXPECT_EQ(0x10, cpu.get_registers().get_esp());
+    EXPECT_EQ(0x69707172, cpu.get_memory().get_quad(0x10));
+    EXPECT_EQ(0x07, cpu.get_registers().get_esp());
 }
 
 TEST(Pop, es) {

@@ -9,7 +9,7 @@
 class Operands {
   public:
     Operands(std::unique_ptr<LocationBase>, std::unique_ptr<RegisterLocation>);
-    void print();
+    void print(Width w);
 
     std::unique_ptr<LocationBase> E();
     std::unique_ptr<RegisterLocation> G();
@@ -19,7 +19,7 @@ class Operands {
 };
 
 Operands
-decode_modrm(CPU& cpu);
+decode_modrm(CPU& cpu, Width w);
 
 
 #endif // EXAMPLE_OPERANDS_H

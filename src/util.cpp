@@ -33,8 +33,28 @@ print_double_in_hex(uint32_t dub) {
 }
 
 Register
-index_to_register(uint8_t index) {
+index_to_register(uint8_t index, Width w) {
     // printf("register index is: %02x\n", index);
+    if (w == U8) {
+        switch (index) {
+        case 0b000:
+            return Al;
+        case 0b001:
+            return Cl;
+        case 0b010:
+            return Dl;
+        case 0b011:
+            return Bl;
+        case 0b100:
+            return Ah;
+        case 0b101:
+            return Ch;
+        case 0b110:
+            return Dh;
+        case 0b111:
+            return Bh;
+        }
+    }
     switch (index) {
     case 0b000:
         return Eax;
@@ -54,10 +74,53 @@ index_to_register(uint8_t index) {
         return Edi;
     }
     printf("XXXXXXX BAD (index_to_register) XXXXXXX");
+    throw std::runtime_error("index_to_register() index not found: " + std::to_string(index));
+}
+
+Register
+index_to_segment_register(uint8_t index) {
+    switch (index) {
+    case 0:
+        return Ss;
+    case 1:
+        return Cs;
+    case 2:
+        return Ds;
+    case 3:
+        return Es;
+    case 4:
+        return Fs;
+    case 5:
+        return Gs;
+    }
+    printf("XXXXXXX BAD (index_to_segment_register) XXXXXXX");
+    throw std::runtime_error("index_to_segment_register() index not found: " + std::to_string(index));
 }
 
 uint8_t
-register_to_index(Register reg) {
+register_to_index(Register reg, Width w) {
+    if (w == U8) {
+        switch (reg) {
+        case Al:
+            return 0;
+        case Cl:
+            return 1;
+        case Dl:
+            return 2;
+        case Bl:
+            return 3;
+        case Ah:
+            return 4;
+        case Ch:
+            return 5;
+        case Dh:
+            return 6;
+        case Bh:
+            return 7;
+        default:
+            throw std::runtime_error("register_to_index() U8 reg not found: " + reg);
+        }
+    }
     // printf("register index is: %02x\n", index);
     switch (reg) {
     case Eax:
@@ -77,7 +140,30 @@ register_to_index(Register reg) {
     case Edi:
         return 7;
     }
-    printf("XXXXXXX BAD (index_to_register) XXXXXXX");
+    printf("XXXXXXX BAD (register_to_index) XXXXXXX");
+    throw std::runtime_error("register_to_index() reg not found: " + reg);
+}
+
+uint8_t
+segment_register_to_index(Register reg) {
+    // XXX do the segment registers belong here? it's just convenient for now
+    switch (reg) {
+    case Ss:
+        return 0;
+    case Cs:
+        return 1;
+    case Ds:
+        return 2;
+    case Es:
+        return 3;
+    case Fs:
+        return 4;
+    case Gs:
+        return 5;
+    }
+    printf("XXXXXXX BAD (segment_register_to_index) XXXXXXX");
+    print_register(reg, U32);
+    throw std::runtime_error("segment_register_to_index() reg not found: " + reg);
 }
 
 void
@@ -112,29 +198,29 @@ print_register(Register r, Width wid) {
     switch (wid) {
     case U8:
         switch (r) {
-        case Eax:
+        case Al:
             printf("al");
             return;
-        case Ecx:
+        case Cl:
             printf("cl");
             return;
-        case Edx:
+        case Dl:
             printf("dl");
             return;
-        case Ebx:
+        case Bl:
             printf("bl");
             return;
-        case Esp:
-            printf("spl");
+        case Ah:
+            printf("ah");
             return;
-        case Ebp:
-            printf("bpl");
+        case Ch:
+            printf("ch");
             return;
-        case Esi:
-            printf("sil");
+        case Dh:
+            printf("dh");
             return;
-        case Edi:
-            printf("dil");
+        case Bh:
+            printf("bh");
             return;
         }
     case U16:
@@ -196,4 +282,5 @@ print_register(Register r, Width wid) {
         }
     }
     printf("XXXXXXX BAD (print_register) XXXXXXX");
+    throw std::runtime_error("print_register() reached end");
 }

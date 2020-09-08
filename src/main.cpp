@@ -12,32 +12,40 @@ main(int argc, char** argv) {
     CPU cpu;
 
     for (int i = 1; i < argc; i++) {
-        if (std::string(argv[i]) == "--memory") {
-            if (i + 2 > argc) {
-                std::cout << "--memory expects two args after";
-                return -1;
-            }
-            char* mem_start_string = argv[++i];
-            uint32_t mem_start = std::atoi(mem_start_string);
-            std::string hex_string = argv[++i];
-            cpu.get_memory().set_bytes(mem_start, hex_string);
-        } else if (std::string(argv[i]) == "--register") {
-            if (i + 2 > argc) {
-                std::cout << "--register expects two args after";
-                return -1;
-            }
-            uint8_t reg_index = std::stoi(argv[++i]);
-            uint32_t reg_value = std::stol(argv[++i], nullptr, 0);
-            cpu.get_registers().set_register(U32, index_to_register(reg_index), reg_value);
-        } else if (std::string(argv[i]) == "--mem-size") {
+        if (std::string(argv[i]) == "--mem-size") {
             if (i + 1 > argc) {
                 std::cout << "--mem-size expects an argument after";
                 return -1;
             }
             uint32_t mem_size = std::stol(argv[++i], nullptr, 0);
             cpu.get_memory().set_size(mem_size);
-            cpu.get_registers().set_register(U32, Esp, mem_size - 1);  // XXX ugly
-            cpu.get_registers().set_register(U32, Ebp, mem_size - 1);
+            cpu.get_registers().set_register(U32, Esp, mem_size - 1, true); // XXX ugly
+            cpu.get_registers().set_register(U32, Ebp, mem_size - 1, true); // needs to be overridable with --register
+        } else if (std::string(argv[i]) == "--mem") {
+            if (i + 2 > argc) {
+                std::cout << "--mem expects two args after";
+                return -1;
+            }
+            char* mem_start_string = argv[++i];
+            uint32_t mem_start = std::atoi(mem_start_string);
+            std::string hex_string = argv[++i];
+            cpu.get_memory().set_bytes(mem_start, hex_string);
+        } else if (std::string(argv[i]) == "--reg") {
+            if (i + 2 > argc) {
+                std::cout << "--reg expects two args after";
+                return -1;
+            }
+            uint8_t reg_index = std::stoi(argv[++i]);
+            uint32_t reg_value = std::stol(argv[++i], nullptr, 0);
+            cpu.get_registers().set_register(U32, index_to_register(reg_index, U32), reg_value);
+        } else if (std::string(argv[i]) == "--sreg") {
+            if (i + 2 > argc) {
+                std::cout << "--sreg expects two args after";
+                return -1;
+            }
+            uint8_t sreg_index = std::stoi(argv[++i]);
+            uint32_t sreg_value = std::stol(argv[++i], nullptr, 0);
+            cpu.get_registers().set_segment_register(index_to_segment_register(sreg_index), sreg_value);
         } else {
             std::cout << "didn't recognize the flag";
             return -1;
@@ -49,10 +57,11 @@ main(int argc, char** argv) {
     std::cout << "EIP:        ";
     print_quad_in_hex(cpu.get_registers().get_eip());
     printf("\n");
-    std::cout << "EFLAGS: XXX" << std::endl;
+    // std::cout << "EFLAGS: " ;
+    cpu.get_registers().print_status_flags();
     std::cout << "REGS1: ";
     for (int i = 0; i < 8; i++) {
-        print_register(index_to_register(i), U32);
+        print_register(index_to_register(i, U32), U32);
         printf(": ");
         print_quad_in_hex(cpu.get_registers().get_register_by_index(i, U32));
     }
@@ -60,10 +69,40 @@ main(int argc, char** argv) {
     std::cout << "REGS2: ";
     for (int i = 0; i < 8; i++) {
         printf(" ");
-        print_register(index_to_register(i), U16);
+        print_register(index_to_register(i, U16), U16);
         printf(":     ");
         print_double_in_hex(cpu.get_registers().get_register_by_index(i, U16));
     }
+    printf("\n");
+    std::cout << "REGS3: ";
+    for (int i = 0; i < 4; i++) {
+        printf(" ");
+        print_register(index_to_register(i, U8), U8);
+        printf(":       ");
+        print_byte_in_hex(cpu.get_registers().get_register_by_index(i, U8));
+    }
+    printf("\n");
+    std::cout << "REGS4: ";
+    for (int i = 4; i < 8; i++) {
+        printf(" ");
+        print_register(index_to_register(i, U8), U8);
+        printf(":     ");
+        print_byte_in_hex(cpu.get_registers().get_register_by_index(i, U8));
+        printf("  ");
+    }
+    printf("\n");
+    std::cout << "REGS5:  ss: ";
+    print_quad_in_hex(cpu.get_registers().get_ss());
+    std::cout << " cs: ";
+    print_quad_in_hex(cpu.get_registers().get_cs());
+    std::cout << " ds: ";
+    print_quad_in_hex(cpu.get_registers().get_ds());
+    std::cout << " es: ";
+    print_quad_in_hex(cpu.get_registers().get_es());
+    std::cout << " fs: ";
+    print_quad_in_hex(cpu.get_registers().get_fs());
+    std::cout << " gs: ";
+    print_quad_in_hex(cpu.get_registers().get_gs());
     printf("\n");
 
     // std::cout << cpu << std::endl;

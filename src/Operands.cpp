@@ -17,12 +17,12 @@ Operands::G() {
 }
 
 void
-Operands::print() {
+Operands::print(Width w) {
     std::cout << "E: ";
-    e->print(U32);
+    e->print(w);
     printf("\n");
     std::cout << "G: ";
-    g->print(U32);  // XXX register should know its width
+    g->print(w);  // XXX register should know its width
     printf("\n");
 }
 
@@ -30,7 +30,7 @@ Operands::print() {
 // mod: 00: rm specifies a memory address stored in a register
 // mod: 11: rm specifies a register
 Operands
-decode_modrm(CPU& cpu) {
+decode_modrm(CPU& cpu, Width w) {
     uint8_t modrm = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
     cpu.get_registers().inc_eip();
     std::cout << "MOD / REG / RM: " << std::bitset<8>(modrm) << std::endl;
@@ -41,8 +41,8 @@ decode_modrm(CPU& cpu) {
 
     if (mod == 0b11) {
         std::cout << "-- register-to-register mode --" << std::endl;
-        auto operands = Operands(std::make_unique<RegisterLocation>(index_to_register(rm)),
-                                 std::make_unique<RegisterLocation>(index_to_register(reg)));
+        auto operands = Operands(std::make_unique<RegisterLocation>(index_to_register(rm, w)),
+                                 std::make_unique<RegisterLocation>(index_to_register(reg, w)));
         return operands;
     }
 
@@ -50,34 +50,43 @@ decode_modrm(CPU& cpu) {
     if (rm != 0b100) {
         if (mod == 0b01) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
-            uint8_t disp8 = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
+            int8_t disp8 = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
+            // XXX am i doing this right?
+            if (disp8 > 127) {
+                disp8 -= 256;  // XXX 256 is larger than an int8 holds
+            }
             cpu.get_registers().inc_eip();
             return Operands(std::make_unique<MemoryLocation>(address + disp8),
-                            std::make_unique<RegisterLocation>(index_to_register(reg)));
+                            std::make_unique<RegisterLocation>(index_to_register(reg, w)));
         }
         if (mod == 0b10) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
-            uint32_t disp32 = cpu.get_memory().get_quad(cpu.get_registers().get_eip());
+            int32_t disp32 = cpu.get_memory().get_quad(cpu.get_registers().get_eip());
+            // XXX am i doing this right?
+            if (disp32 > 0xffff) {
+                disp32 -= 1<<32;  // XXX overflow? right?
+            }
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             return Operands(std::make_unique<MemoryLocation>(address + disp32),
-                            std::make_unique<RegisterLocation>(index_to_register(reg)));
+                            std::make_unique<RegisterLocation>(index_to_register(reg, w)));
         }
         // at this point, mod == 0b00
         if (rm != 0b101) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
             return Operands(std::make_unique<MemoryLocation>(address),
-                            std::make_unique<RegisterLocation>(index_to_register(reg)));
+                            std::make_unique<RegisterLocation>(index_to_register(reg, w)));
         } else {
+            // XXX is this right?
             uint32_t disp32 = cpu.get_memory().get_quad(cpu.get_registers().get_eip());
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             return Operands(std::make_unique<MemoryLocation>(disp32),
-                            std::make_unique<RegisterLocation>(index_to_register(reg)));
+                            std::make_unique<RegisterLocation>(index_to_register(reg, w)));
         }
     }
     // at this point, there is a SIB byte
@@ -121,5 +130,5 @@ decode_modrm(CPU& cpu) {
     }
 
     return Operands(std::make_unique<MemoryLocation>(disp + scaled_index + base_value),
-                    std::make_unique<RegisterLocation>(index_to_register(reg)));
+                    std::make_unique<RegisterLocation>(index_to_register(reg, w)));
 }
