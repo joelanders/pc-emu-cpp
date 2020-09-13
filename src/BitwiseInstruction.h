@@ -21,6 +21,8 @@ class BitwiseInstruction : public InstructionBase {
     uint8_t opcode;
     CPU& cpu;
     bool do_or(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w);
+    bool do_and(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w);
+    bool do_xor(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w);
     static bool s_registered;
 };
 

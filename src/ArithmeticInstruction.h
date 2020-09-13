@@ -26,7 +26,9 @@ class ArithmeticInstruction : public InstructionBase {
   private:
     uint8_t opcode;
     CPU& cpu;
-    bool add(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w);
+    bool add(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w, bool carry=false);
+    bool sub(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w, bool borrow=false);
+    bool cmp(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w);
 
     // constexpr static const std::vector<uint8_t> opcodes;
     static bool s_registered;
