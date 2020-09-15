@@ -8,6 +8,7 @@ BitwiseInstruction::execute(CPU& cpu) {
     std::cout << "BitwiseInstruction::execute " << std::endl;
     std::cout << "switching on opcode: ";
     print_byte_in_hex(opcode);
+    printf("\n");
     switch (opcode) {
     case 0x08: {
         Width w = U8;

@@ -150,7 +150,7 @@ TEST(Push, cs) {
     cpu.set_register(U16, Esp, 0x11);
     cpu.set_register(U8, Cs, 0x69);
     cpu.execute_next_instruction();
-    EXPECT_EQ(0x69, cpu.get_memory().get_byte(0x10));
+    EXPECT_EQ(0x69, cpu.get_memory().get_byte(0x10, true));
     EXPECT_EQ(0x10, cpu.get_registers().get_esp());
 }
 

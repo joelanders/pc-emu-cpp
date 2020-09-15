@@ -16,12 +16,19 @@ RegisterLocation::read(CPU& cpu, Width w) {
     uint32_t value;
     value = cpu.get_registers().get_register_by_index(register_to_index(reg, w), w);
 
-    std::cout << "RegisterLocation::read() from reg ";
+    std::cout << "REGGET ";
     print_register(reg, w);
-    std::cout << " value ";
-    print_quad_in_hex(value);
-    std::cout << " width ";
-    print_width(wid);
+    std::cout << " value: ";
+    switch (w) {
+    case U8:
+        print_byte_in_hex(value);
+        break;
+    case U32:
+        print_quad_in_hex(value);
+        break;
+    }
+    // std::cout << " width ";
+    // print_width(wid);
     printf("\n");
     return value;
 }
@@ -43,5 +50,5 @@ void
 RegisterLocation::print(Width w) {
     std::cout << "RegisterLocation: ";
     print_register(reg, w);
-    std::cout << " ";
+    std::cout << "\n";
 }

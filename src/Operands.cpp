@@ -31,7 +31,7 @@ Operands::print(Width w) {
 // mod: 11: rm specifies a register
 Operands
 decode_modrm(CPU& cpu, Width w) {
-    uint8_t modrm = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
+    uint8_t modrm = cpu.get_memory().get_byte(cpu.get_registers().get_eip(), true);
     cpu.get_registers().inc_eip();
     std::cout << "MOD / REG / RM: " << std::bitset<8>(modrm) << std::endl;
 
@@ -50,7 +50,7 @@ decode_modrm(CPU& cpu, Width w) {
     if (rm != 0b100) {
         if (mod == 0b01) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
-            int8_t disp8 = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
+            int8_t disp8 = cpu.get_memory().get_byte(cpu.get_registers().get_eip(), true);
             // XXX am i doing this right?
             if (disp8 > 127) {
                 disp8 -= 256;  // XXX 256 is larger than an int8 holds
@@ -90,7 +90,7 @@ decode_modrm(CPU& cpu, Width w) {
         }
     }
     // at this point, there is a SIB byte
-    uint8_t sib = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
+    uint8_t sib = cpu.get_memory().get_byte(cpu.get_registers().get_eip(), true);
     cpu.get_registers().inc_eip();
 
     uint8_t scale = (sib & 0b11000000) >> 6;
@@ -101,7 +101,7 @@ decode_modrm(CPU& cpu, Width w) {
     if (mod == 0b00) {
         disp = 0;
     } else if (mod == 0b01) {
-        disp = cpu.get_memory().get_byte(cpu.get_registers().get_eip());
+        disp = cpu.get_memory().get_byte(cpu.get_registers().get_eip(), true);
         cpu.get_registers().inc_eip();
     } else /* if (mod == 0b10) */ {
         disp = cpu.get_memory().get_quad(cpu.get_registers().get_eip());

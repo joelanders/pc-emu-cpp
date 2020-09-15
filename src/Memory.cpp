@@ -4,69 +4,116 @@
 
 #include "Memory.h"
 
-Memory::Memory() : bytes(0) {}
+Memory::Memory() {}
+
+uint32_t linear_address_to_page_index(uint32_t linear_address);
+uint32_t linear_address_to_page_offset(uint32_t linear_address);
 
 void
-Memory::set_byte(size_t address, uint8_t value) {
-    std::cout << "MEMSET offset: ";
-    print_quad_in_hex(address);
-    std::cout << "value: ";
-    print_byte_in_hex(value);
-    std::cout << std::endl;
-
-    if (address + 1 > bytes.size()) {
-        bytes.resize(address + 1);
+Memory::set_byte(size_t address, uint8_t value, bool print) {
+    if (address + 1 > get_size()) {
+        throw std::runtime_error("set_byte out of bounds");
     }
 
     std::cout << "mem set addy ";
     print_quad_in_hex(address);
     std::cout << "to value ";
-    print_quad_in_hex(value);
+    print_byte_in_hex(value);
     printf("\n");
-    bytes[address] = value;
-}
+    auto page_index = linear_address_to_page_index(address);
+    auto page_offset = linear_address_to_page_offset(address);
 
-uint32_t
-Memory::get_byte(size_t address) {
-    if (address + 1 > bytes.size()) {
-        bytes.resize(address + 1);
+    if (print) {
+        // std::cout << "MEMSET page_index: ";
+        // print_quad_in_hex(page_index);
+        // std::cout << "page_offset: ";
+        // print_quad_in_hex(page_offset);
+        std::cout << "MEMSET offset: ";
+        print_quad_in_hex(address);
+        std::cout << " value: ";
+        print_byte_in_hex(value);
+        std::cout << std::endl;
     }
 
-    std::cout << "mem get addy ";
-    print_quad_in_hex(address);
-    std::cout << ", value: ";
-    print_quad_in_hex(bytes.at(address));
-    printf("\n");
-
-    return bytes.at(address);
+    // bytes[address] = value;
+    if (pages.find(page_index) != pages.end()) {
+        pages[page_index][page_offset] = value;
+        // std::cout << "set_byte() in existing page" << std::endl;
+    } else {
+        pages.insert(std::make_pair(page_index, std::vector<uint8_t>(4096)));
+        pages[page_index][page_offset] = value;
+        // std::cout << "set_byte() in new page" << std::endl;
+    }
 }
 
 uint32_t
-Memory::get_quad(size_t address) {
+Memory::get_byte(size_t index, bool print) {
+    if (index + 1 > get_size()) {
+        throw std::runtime_error("get_byte out of bounds");
+    }
+
+    uint8_t value;
+    // return bytes.at(address);
+    auto page_index = linear_address_to_page_index(index);
+    auto page_offset = linear_address_to_page_offset(index);
+
+    if (print) {
+        // std::cout << "MEMGET get page_index ";
+        // print_quad_in_hex(page_index);
+        // std::cout << ", page_offset ";
+        // print_quad_in_hex(page_offset);
+        std::cout << "MEMGET offset: ";
+        print_quad_in_hex(index);
+        std::cout << " value: ";
+    }
+
+    if (pages.find(page_index) != pages.end()) {
+        value = pages[page_index][page_offset];
+        print_byte_in_hex(value);
+        // std::cout << "get_byte() in existing page" << std::endl;
+    } else {
+        pages.insert(std::make_pair(page_index, std::vector<uint8_t>(4096)));
+        value = pages[page_index][page_offset];
+        print_byte_in_hex(value);
+        // std::cout << "get_byte() in new page" << std::endl;
+    }
+    std::cout << std::endl;
+
+    return value;
+}
+
+uint32_t
+Memory::get_quad(size_t address, bool print) {
     uint32_t value = 0;
-    value += bytes.at(address);
-    value += bytes.at(address + 1) << 8;
-    value += bytes.at(address + 2) << 16;
-    value += bytes.at(address + 3) << 24;
+    value += get_byte(address, false);
+    value += get_byte(address + 1, false) << 8;
+    value += get_byte(address + 2, false) << 16;
+    value += get_byte(address + 3, false) << 24;
+
+    std::cout << "MEMGET offset: ";
+    print_quad_in_hex(address);
+    std::cout << "value: ";
+    print_quad_in_hex(value);
+    std::cout << std::endl;
     return value;
 }
 
 void
-Memory::set_quad(size_t start, uint32_t value) {
+Memory::set_quad(size_t start, uint32_t value, bool print) {
     std::cout << "MEMSET offset: ";
     print_quad_in_hex(start);
     std::cout << "value: ";
     print_quad_in_hex(value);
     std::cout << std::endl;
 
-    if (start + 4 > bytes.size()) {
-        bytes.resize(start + 4);
-    }
+    // if (start + 4 > bytes.size()) {
+    //     bytes.resize(start + 4);
+    // }
 
-    bytes[start] = value & 0xff;
-    bytes[start + 1] = (value >> 8) & 0xff;
-    bytes[start + 2] = (value >> 16) & 0xff;
-    bytes[start + 3] = (value >> 24) & 0xff;
+    set_byte(start, value & 0xff, false);
+    set_byte(start + 1, (value >> 8) & 0xff, false);
+    set_byte(start + 2, (value >> 16) & 0xff, false);
+    set_byte(start + 3, (value >> 24) & 0xff, false);
 }
 
 void
@@ -77,15 +124,15 @@ Memory::set_bytes(size_t start, std::string hex_string) {
     std::vector<std::string> hexes;
     boost::split(hexes, hex_string, boost::is_any_of(" "));
 
-    if (start + hexes.size() > bytes.size()) {
-        bytes.resize(start + hexes.size());
-    }
+    // if (start + hexes.size() > bytes.size()) {
+    //     bytes.resize(start + hexes.size());
+    // }
 
     size_t i = start;
     for (auto& hex_digit : hexes) {
         std::stringstream ss;
         uint8_t byte = strtol(hex_digit.c_str(), NULL, 16);
-        bytes[i] = byte;
+        set_byte(i, byte, false);
         ++i;
     }
 }
@@ -96,29 +143,38 @@ Memory::set_bytes(size_t start, std::vector<uint8_t> new_bytes) {
     print_quad_in_hex(start);
     std::cout << "value: ";
 
-    if (start + new_bytes.size() > bytes.size()) {
-        bytes.resize(start + new_bytes.size());
-    }
+    // if (start + new_bytes.size() > bytes.size()) {
+    //     bytes.resize(start + new_bytes.size());
+    // }
 
     size_t i = start;
     for (auto& byte : new_bytes) {
         print_byte_in_hex(byte);
         printf(" ");
-        bytes[i] = byte;
+        set_byte(i, byte);
         ++i;
     }
     std::cout << std::endl;
 }
 
+uint32_t
+linear_address_to_page_index(uint32_t linear_address) {
+    return (linear_address >> 12) & 0xfffff;
+}
+
+uint32_t
+linear_address_to_page_offset(uint32_t linear_address) {
+    return linear_address & 0xfff;
+}
 
 void
 Memory::set_zero_bytes(size_t start, size_t len) {
-    if (start + len > bytes.size()) {
-        bytes.resize(start + len);
-    }
+    // if (start + len > bytes.size()) {
+    //     bytes.resize(start + len);
+    // }
 
     for (size_t i = start; i < len; i++) {
-        bytes[i] = 0;
+        set_byte(i, 0);
     }
 }
 
@@ -127,6 +183,10 @@ operator<<(std::ostream& os, const Memory& memory) {
     os << "Memory:" << std::endl;
     os << "\tsize: " << memory.get_size();
     os << "\n\t";
-    print_vector_bytes(memory.get_bytes());
+    auto it = memory.get_pages().begin();
+    while(it != memory.get_pages().end()) {
+        print_quad_in_hex(it->first);
+        print_vector_bytes(it->second);
+    }
     return os;
 }

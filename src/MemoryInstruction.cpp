@@ -8,6 +8,7 @@ MemoryInstruction::execute(CPU& cpu) {
     std::cout << "MemoryInstruction::execute " << std::endl;
     std::cout << "switching on opcode: ";
     print_byte_in_hex(opcode);
+    printf("\n");
     switch (opcode) {
     case 0x06: {
         return cpu.push_on_stack(U32, cpu.get_registers().get_es());

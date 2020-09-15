@@ -17,10 +17,11 @@ main(int argc, char** argv) {
                 std::cout << "--mem-size expects an argument after";
                 return -1;
             }
-            uint32_t mem_size = std::stol(argv[++i], nullptr, 0);
-            cpu.get_memory().set_size(mem_size);
-            cpu.get_registers().set_register(U32, Esp, mem_size - 1, true); // XXX ugly
-            cpu.get_registers().set_register(U32, Ebp, mem_size - 1, true); // needs to be overridable with --register
+            uint32_t top_of_stack = std::stol(argv[++i], nullptr, 0);
+            uint32_t mem_size = UINT32_MAX;
+            // cpu.get_memory().set_size(mem_size);
+            cpu.get_registers().set_register(U32, Esp, top_of_stack - 1, true); // XXX ugly
+            cpu.get_registers().set_register(U32, Ebp, top_of_stack - 1, true); // needs to be overridable with --register
         } else if (std::string(argv[i]) == "--mem") {
             if (i + 2 > argc) {
                 std::cout << "--mem expects two args after";
@@ -47,7 +48,7 @@ main(int argc, char** argv) {
             uint32_t sreg_value = std::stol(argv[++i], nullptr, 0);
             cpu.get_registers().set_segment_register(index_to_segment_register(sreg_index), sreg_value);
         } else {
-            std::cout << "didn't recognize the flag";
+            std::cout << "didn't recognize the flag: " << std::string(argv[i]) << std::endl;
             return -1;
         }
     }

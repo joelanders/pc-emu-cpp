@@ -45,11 +45,11 @@ CPU::execute_next_instruction() {
 
     uint8_t opcode;
     std::vector<uint8_t> overrides{};
-    auto maybe_prefix = memory.get_byte(registers.get_eip());
+    auto maybe_prefix = memory.get_byte(registers.get_eip(), true);
     while (prefix_bytes.count(maybe_prefix)) {
         overrides.emplace_back(maybe_prefix);
         registers.inc_eip();
-        maybe_prefix = memory.get_byte(registers.get_eip());
+        maybe_prefix = memory.get_byte(registers.get_eip(), true);
     }
     opcode = maybe_prefix;
     registers.inc_eip();
@@ -68,7 +68,7 @@ CPU::execute_next_instruction() {
             printf("execute() returned false!\n");
         }
     } else {
-        printf("create() failed!!!\n");
+        throw std::runtime_error("create() failed");
     }
 }
 
@@ -130,7 +130,7 @@ CPU::pop_off_stack(Width w) {
     uint32_t value;
     switch (w) {
     case U8:
-        value = memory.get_byte(old_esp);
+        value = memory.get_byte(old_esp, true);
         break;
     case U16:
         throw std::runtime_error("u16 not implemented");
