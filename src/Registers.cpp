@@ -255,24 +255,29 @@ Registers::print_status_flags() {
 }
 
 void
-Registers::update_status_flags(uint32_t a, uint32_t b, uint32_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf) {
+Registers::update_status_flags(uint64_t a, uint64_t b, uint64_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf) {
     size_t size_bytes = width_to_size(w);
 
     bool sign_a = (a >> (size_bytes * 8 - 1)) & 1;
     bool sign_b = (b >> (size_bytes * 8 - 1)) & 1;
     bool sign_c = (c >> (size_bytes * 8 - 1)) & 1;
+    printf("XXX: sign_a: %d, sign_b: %d, sign_c: %d\n", sign_a, sign_b, sign_c);
 
     if (!flip_sign) {
         set_of((sign_a == sign_b) & (sign_a != sign_c));
-        set_cf(c > (size_bytes * 8 - 1));
+        set_cf(c > (((uint64_t)1 << (size_bytes * 8)) - 1));
+        printf("XXX: c: %llu\n", c);
+        printf("XXX: size_bytes: %d\n", size_bytes);
+        printf("XXX: maxsize[w]: %llu\n", ((uint64_t)1 << (size_bytes * 8)) - 1);
+        printf("XXX: c > maxsize[w]: %d\n", (c > (((uint64_t)1 << (size_bytes * 8)) - 1)));
         if (!no_af) {
-            set_af(((a & 255) + (b & 255)) > (size_bytes * 8 - 1));
+            set_af(((a & 255) + (b & 255)) > 255);
         }
     } else {
         set_of((sign_a != sign_b) & (sign_a != sign_c));
-        set_cf(b > 1);
+        set_cf(b > a);
         if (!no_af) {
-            set_af((b & 255) + (a & 255));
+            set_af((b & 255) > (a & 255));
         }
     }
 

@@ -63,9 +63,6 @@ decode_modrm(CPU& cpu, Width w) {
             uint32_t address = cpu.get_registers().get_register_by_index(rm, U32);
             int32_t disp32 = cpu.get_memory().get_quad(cpu.get_registers().get_eip());
             // XXX am i doing this right?
-            if (disp32 > 0xffff) {
-                disp32 -= 1<<32;  // XXX overflow? right?
-            }
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
             cpu.get_registers().inc_eip();
@@ -97,19 +94,33 @@ decode_modrm(CPU& cpu, Width w) {
     uint8_t index = (sib & 0b00111000) >> 3;
     uint8_t base = (sib & 0b00000111);
 
+    // XXX double check this two's complement stuff
     uint32_t disp = 0;
+    int32_t signed_disp = 0;
     if (mod == 0b00) {
         disp = 0;
+        signed_disp = 0;
     } else if (mod == 0b01) {
         disp = cpu.get_memory().get_byte(cpu.get_registers().get_eip(), true);
-        cpu.get_registers().inc_eip();
+        if (disp > (1 << 7) - 1) {
+            signed_disp = disp - (int32_t)0xff - 1;
+        } else {
+            signed_disp = disp;
+        }
     } else /* if (mod == 0b10) */ {
         disp = cpu.get_memory().get_quad(cpu.get_registers().get_eip());
+        if (disp > (1 << 15) - 1) {
+            signed_disp = disp - (int32_t)0xffffffff - 1;
+        } else {
+            signed_disp = disp;
+        }
         cpu.get_registers().inc_eip();
         cpu.get_registers().inc_eip();
         cpu.get_registers().inc_eip();
         cpu.get_registers().inc_eip();
     }
+    printf("XXX unsigned_disp: %u\n", disp);
+    printf("XXX signed_disp: %d\n", signed_disp);
 
     uint32_t scaled_index = 0;
     if (index == 0b100) {
@@ -129,6 +140,6 @@ decode_modrm(CPU& cpu, Width w) {
         base_value = cpu.get_registers().get_register_by_index(base, U32);
     }
 
-    return Operands(std::make_unique<MemoryLocation>(disp + scaled_index + base_value),
+    return Operands(std::make_unique<MemoryLocation>(signed_disp + scaled_index + base_value),
                     std::make_unique<RegisterLocation>(index_to_register(reg, w)));
 }

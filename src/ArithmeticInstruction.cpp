@@ -264,9 +264,9 @@ ArithmeticInstruction::execute(CPU& cpu) {
 
 bool
 ArithmeticInstruction::add(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w, bool carry) {
-    uint32_t a = dest->read(cpu, w);
-    uint32_t b = src->read(cpu, w);
-    uint32_t c = a + b;
+    uint64_t a = dest->read(cpu, w);  // XXX feels like cheating to use a uint64_t
+    uint64_t b = src->read(cpu, w);
+    uint64_t c = a + b;
     if (carry) {
         if (cpu.get_registers().get_cf()) {
             c += 1;
@@ -279,25 +279,25 @@ ArithmeticInstruction::add(std::unique_ptr<LocationBase> dest, std::unique_ptr<L
 
 bool
 ArithmeticInstruction::sub(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w, bool borrow) {
-    uint32_t a = dest->read(cpu, w);
-    uint32_t b = src->read(cpu, w);
-    uint32_t c = a - b;
+    uint64_t a = dest->read(cpu, w);
+    uint64_t b = src->read(cpu, w);
+    uint64_t c = a - b;
     if (borrow) {
         if (cpu.get_registers().get_cf()) {
             c -= 1;
         }
     }
     dest->write(cpu, w, c);
-    cpu.get_registers().update_status_flags(a, b, c, w, false, false, false);
+    cpu.get_registers().update_status_flags(a, b, c, w, true, false, false);
     return true;
 }
 
 bool
 ArithmeticInstruction::cmp(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w) {
-    uint32_t a = dest->read(cpu, w);
-    uint32_t b = src->read(cpu, w);
-    uint32_t c = a - b;
-    cpu.get_registers().update_status_flags(a, b, c, w, false, false, false);
+    uint64_t a = dest->read(cpu, w);
+    uint64_t b = src->read(cpu, w);
+    uint64_t c = a - b;
+    cpu.get_registers().update_status_flags(a, b, c, w, true, false, false);
     return true;
 }
 
