@@ -44,7 +44,8 @@ class Registers {
     void set_sf(bool new_val) { sf = new_val; }
     void set_of(bool new_val) { of = new_val; }
 
-    void update_status_flags(uint64_t a, uint64_t b, uint64_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf);
+    void update_status_flags(uint64_t a, uint64_t b, uint64_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf,
+                             bool no_cf);
     void print_status_flags();
     bool set_register(Width w, Register reg, uint32_t value, bool silent=false);
     bool set_segment_register(Register reg, uint32_t value);

@@ -255,7 +255,8 @@ Registers::print_status_flags() {
 }
 
 void
-Registers::update_status_flags(uint64_t a, uint64_t b, uint64_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf) {
+Registers::update_status_flags(uint64_t a, uint64_t b, uint64_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf,
+                               bool no_cf) {
     size_t size_bytes = width_to_size(w);
 
     bool sign_a = (a >> (size_bytes * 8 - 1)) & 1;

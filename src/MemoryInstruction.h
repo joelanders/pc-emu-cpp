@@ -4,6 +4,7 @@
 #include "CPU.h"
 #include "InstructionBase.h"
 #include "InstructionFactory.h"
+#include "RegisterLocation.h"
 
 class MemoryInstruction : public InstructionBase {
   public:

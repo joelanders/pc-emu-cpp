@@ -161,7 +161,7 @@ BitwiseInstruction::do_or(std::unique_ptr<LocationBase> dest, std::unique_ptr<Lo
     uint32_t b = src->read(cpu, w);
     uint32_t c = a | b;
     dest->write(cpu, w, c);
-    cpu.get_registers().update_status_flags(a, b, c, w, false, true, true);
+    cpu.get_registers().update_status_flags(a, b, c, w, false, true, true, false);
     return true;
 }
 
@@ -171,7 +171,7 @@ BitwiseInstruction::do_and(std::unique_ptr<LocationBase> dest, std::unique_ptr<L
     uint32_t b = src->read(cpu, w);
     uint32_t c = a & b;
     dest->write(cpu, w, c);
-    cpu.get_registers().update_status_flags(a, b, c, w, false, true, true);
+    cpu.get_registers().update_status_flags(a, b, c, w, false, true, true, false);
     return true;
 }
 
@@ -181,7 +181,7 @@ BitwiseInstruction::do_xor(std::unique_ptr<LocationBase> dest, std::unique_ptr<L
     uint32_t b = src->read(cpu, w);
     uint32_t c = a ^ b;
     dest->write(cpu, w, c);
-    cpu.get_registers().update_status_flags(a, b, c, w, false, true, true);
+    cpu.get_registers().update_status_flags(a, b, c, w, false, true, true, false);
     return true;
 }
 

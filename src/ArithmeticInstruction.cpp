@@ -251,6 +251,20 @@ ArithmeticInstruction::execute(CPU& cpu) {
         reg->print(w);
         return cmp(std::move(reg), std::move(imm), w);
     }
+    case 0x40 ... 0x47: {
+        Width w = U32;
+        uint8_t reg_index = opcode & 0b111;
+        auto reg = std::make_unique<RegisterLocation>(index_to_register(reg_index, w));
+        reg->print(w);
+        return inc(std::move(reg), w);
+    }
+    case 0x48 ... 0x4f: {
+        Width w = U32;
+        uint8_t reg_index = opcode & 0b111;
+        auto reg = std::make_unique<RegisterLocation>(index_to_register(reg_index, w));
+        reg->print(w);
+        return dec(std::move(reg), w);
+    }
     }
     throw std::runtime_error("ArithmeticInstruction failed to find opcode");
     return false;
@@ -273,7 +287,7 @@ ArithmeticInstruction::add(std::unique_ptr<LocationBase> dest, std::unique_ptr<L
         }
     }
     dest->write(cpu, w, c);
-    cpu.get_registers().update_status_flags(a, b, c, w, false, false, false);
+    cpu.get_registers().update_status_flags(a, b, c, w, false, false, false, false);
     return true;
 }
 
@@ -288,7 +302,7 @@ ArithmeticInstruction::sub(std::unique_ptr<LocationBase> dest, std::unique_ptr<L
         }
     }
     dest->write(cpu, w, c);
-    cpu.get_registers().update_status_flags(a, b, c, w, true, false, false);
+    cpu.get_registers().update_status_flags(a, b, c, w, true, false, false, false);
     return true;
 }
 
@@ -297,8 +311,27 @@ ArithmeticInstruction::cmp(std::unique_ptr<LocationBase> dest, std::unique_ptr<L
     uint64_t a = dest->read(cpu, w);
     uint64_t b = src->read(cpu, w);
     uint64_t c = a - b;
-    cpu.get_registers().update_status_flags(a, b, c, w, true, false, false);
+    cpu.get_registers().update_status_flags(a, b, c, w, true, false, false, false);
     return true;
+}
+
+bool
+ArithmeticInstruction::inc(std::unique_ptr<LocationBase> dest, Width w) {
+    uint64_t a = dest->read(cpu, w);
+    uint64_t c = a + 1;
+    dest->write(cpu, w, c);
+    cpu.get_registers().update_status_flags(a, 1, c, w, true, false, false, true);
+    return true;
+}
+
+bool
+ArithmeticInstruction::dec(std::unique_ptr<LocationBase> dest, Width w) {
+    uint64_t a = dest->read(cpu, w);
+    uint64_t c = a - 1;
+    dest->write(cpu, w, c);
+    cpu.get_registers().update_status_flags(a, 1, c, w, true, false, false, true);
+    return true;
+
 }
 
 // XXX this isn't working in the tests
@@ -307,6 +340,8 @@ const std::vector<uint8_t> opcodes{0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
                                    0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d,
                                    0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d,
                                    0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d,
+                                   0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,
+                                   0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
 };
 
 bool ArithmeticInstruction::s_registered =
