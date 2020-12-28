@@ -98,6 +98,20 @@ Memory::get_quad(size_t address, bool print) {
     return value;
 }
 
+uint32_t
+Memory::get_dual(size_t address, bool print) {
+    uint32_t value = 0;
+    value += get_byte(address, false);
+    value += get_byte(address + 1, false) << 8;
+
+    std::cout << "MEMGET offset: ";
+    print_quad_in_hex(address);
+    std::cout << "value: ";
+    print_quad_in_hex(value);
+    std::cout << std::endl;
+    return value;
+}
+
 void
 Memory::set_quad(size_t start, uint32_t value, bool print) {
     std::cout << "MEMSET offset: ";
@@ -114,6 +128,22 @@ Memory::set_quad(size_t start, uint32_t value, bool print) {
     set_byte(start + 1, (value >> 8) & 0xff, false);
     set_byte(start + 2, (value >> 16) & 0xff, false);
     set_byte(start + 3, (value >> 24) & 0xff, false);
+}
+
+void
+Memory::set_dual(size_t start, uint32_t value, bool print) {
+    std::cout << "MEMSET offset: ";
+    print_quad_in_hex(start);
+    std::cout << "value: ";
+    print_quad_in_hex(value);
+    std::cout << std::endl;
+
+    // if (start + 4 > bytes.size()) {
+    //     bytes.resize(start + 4);
+    // }
+
+    set_byte(start, value & 0xff, false);
+    set_byte(start + 1, (value >> 8) & 0xff, false);
 }
 
 void

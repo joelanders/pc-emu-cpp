@@ -11,6 +11,7 @@ class MemoryInstruction : public InstructionBase {
     MemoryInstruction(uint8_t opcode, CPU& cpu);
     virtual ~MemoryInstruction(){};
     virtual bool execute(CPU& cpu);
+    bool mov(std::unique_ptr<LocationBase> dest, std::unique_ptr<LocationBase> src, Width w);
 
     static std::unique_ptr<InstructionBase> create_method(uint8_t opcode, CPU& cpu) {
         return std::make_unique<MemoryInstruction>(opcode, cpu);

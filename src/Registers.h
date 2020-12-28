@@ -50,6 +50,7 @@ class Registers {
     bool set_register(Width w, Register reg, uint32_t value, bool silent=false);
     bool set_segment_register(Register reg, uint32_t value);
     void inc_eip() { ++eip; }
+    void set_eip(uint32_t new_val) { eip = new_val; }
 
     uint32_t get_register_by_index(size_t index, Width w);
 

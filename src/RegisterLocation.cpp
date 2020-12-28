@@ -23,6 +23,9 @@ RegisterLocation::read(CPU& cpu, Width w) {
     case U8:
         print_byte_in_hex(value);
         break;
+    case U16:
+        print_quad_in_hex(value);
+        break;
     case U32:
         print_quad_in_hex(value);
         break;

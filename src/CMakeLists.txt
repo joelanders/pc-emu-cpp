@@ -27,7 +27,7 @@ endif ()
 
 # static library
 # add_library(mylib_static STATIC mylib.cpp CPU.cpp)
-add_library(mylib_static STATIC main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h MemoryInstruction.cpp MemoryInstruction.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h util.cpp util.h BitwiseInstruction.h BitwiseInstruction.cpp Operands.h Operands.cpp)
+add_library(mylib_static STATIC ControlInstruction.cpp ControlInstruction.h main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h MemoryInstruction.cpp MemoryInstruction.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h util.cpp util.h BitwiseInstruction.h BitwiseInstruction.cpp Operands.h Operands.cpp)
 target_include_directories(
         mylib_static
         PUBLIC
@@ -40,7 +40,7 @@ target_include_directories(
 add_library(mylib_shared SHARED mylib.cpp)
 
 # compile main executable
-add_executable(main.x main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h MemoryInstruction.cpp MemoryInstruction.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h util.cpp util.h BitwiseInstruction.h BitwiseInstruction.cpp Operands.h Operands.cpp)
+add_executable(main.x ControlInstruction.cpp ControlInstruction.h main.cpp CPU.cpp CPU.h Registers.cpp Registers.h Memory.cpp Memory.h LocationBase.cpp LocationBase.h MemoryLocation.cpp MemoryLocation.h MemoryInstruction.cpp MemoryInstruction.h RegisterLocation.cpp RegisterLocation.h InstructionBase.cpp InstructionBase.h InstructionFactory.cpp InstructionFactory.h ArithmeticInstruction.cpp ArithmeticInstruction.h util.cpp util.h BitwiseInstruction.h BitwiseInstruction.cpp Operands.h Operands.cpp)
 target_include_directories(
         main.x
         PRIVATE

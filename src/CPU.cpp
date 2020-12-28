@@ -7,6 +7,7 @@
 #include "BitwiseInstruction.h"
 #include "InstructionFactory.h"
 #include "MemoryInstruction.h"
+#include "ControlInstruction.h"
 #include "util.h"
 
 CPU::CPU() {
@@ -28,12 +29,18 @@ CPU::CPU() {
             0x06, 0x07, 0x0e, 0x0f,
             0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,
             0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f,
+            0x88, 0x89, 0x8a, 0x8b,
     };
     InstructionFactory::register_opcodes(opcodes2, MemoryInstruction::create_method);
 
     const std::vector<uint8_t> opcodes3{0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
                                         0x20, 0x21, 0x22, 0x23, 0x24, 0x25};
-    InstructionFactory::register_opcodes(opcodes2, BitwiseInstruction::create_method);
+    InstructionFactory::register_opcodes(opcodes3, BitwiseInstruction::create_method);
+
+    const std::vector<uint8_t> opcodes4{0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77,
+        0x78, 0x79, 0x7a, 0x7b, 0x7c, 0x7d, 0x7e, 0x7f};
+    InstructionFactory::register_opcodes(opcodes4, ControlInstruction::create_method);
+
 }
 
 std::ostream&
@@ -105,6 +112,7 @@ CPU::push_on_stack(Width w, uint32_t value) {
     if (new_esp < 0) {
         return false;
     }
+    printf("width_to_size(w): %zd\n", width_to_size(w));
     printf("new Esp will be: ");
     print_quad_in_hex(new_esp);
     printf("\n");
@@ -113,7 +121,8 @@ CPU::push_on_stack(Width w, uint32_t value) {
         memory.set_byte(new_esp, value);
         break;
     case U16:
-        throw std::runtime_error("u16 not implemented");
+        memory.set_dual(new_esp, value);
+        break;
     case U32:
         memory.set_quad(new_esp, value);
         break;
@@ -131,6 +140,7 @@ CPU::pop_off_stack(Width w) {
     if (new_esp > memory.get_size()) {
         return std::nullopt;
     }
+    printf("width_to_size(w): %zd\n", width_to_size(w));
     printf("new Esp will be: ");
     print_quad_in_hex(new_esp);
     printf("\n");
@@ -140,7 +150,8 @@ CPU::pop_off_stack(Width w) {
         value = memory.get_byte(old_esp, true);
         break;
     case U16:
-        throw std::runtime_error("u16 not implemented");
+        value = memory.get_dual(old_esp);
+        break;
     case U32:
         value = memory.get_quad(old_esp);
         break;

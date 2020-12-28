@@ -118,7 +118,9 @@ register_to_index(Register reg, Width w) {
         case Bh:
             return 7;
         default:
-            throw std::runtime_error("register_to_index() U8 reg not found: " + reg);
+            printf("XXXXXXX BAD (register_to_index) XXXXXXX");
+            print_register(reg, U8);
+            throw std::runtime_error("register_to_index() U8 reg not found");
         }
     }
     // printf("register index is: %02x\n", index);
@@ -141,7 +143,8 @@ register_to_index(Register reg, Width w) {
         return 7;
     }
     printf("XXXXXXX BAD (register_to_index) XXXXXXX");
-    throw std::runtime_error("register_to_index() reg not found: " + reg);
+    print_register(reg, U32);
+    throw std::runtime_error("register_to_index() reg not found");
 }
 
 uint8_t
@@ -163,7 +166,7 @@ segment_register_to_index(Register reg) {
     }
     printf("XXXXXXX BAD (segment_register_to_index) XXXXXXX");
     print_register(reg, U32);
-    throw std::runtime_error("segment_register_to_index() reg not found: " + reg);
+    throw std::runtime_error("segment_register_to_index() reg not found");
 }
 
 void
@@ -195,6 +198,26 @@ width_to_size(Width w) {
 
 void
 print_register(Register r, Width wid) {
+    switch (r) {
+    case Cs:
+        printf("cs");
+        return;
+    case Ss:
+        printf("ss");
+        return;
+    case Ds:
+        printf("ds");
+        return;
+    case Es:
+        printf("es");
+        return;
+    case Fs:
+        printf("fs");
+        return;
+    case Gs:
+        printf("gs");
+        return;
+    }
     switch (wid) {
     case U8:
         switch (r) {

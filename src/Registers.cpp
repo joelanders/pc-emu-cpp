@@ -207,6 +207,8 @@ Registers::get_register_by_index(size_t index, Width w) {
     }
     uint32_t mask;
     switch (w) {
+    case U8:
+        throw std::runtime_error("U8 should be handled above");
     case U16:
         mask = 0xffff;
         break;
@@ -268,7 +270,7 @@ Registers::update_status_flags(uint64_t a, uint64_t b, uint64_t c, Width w, bool
         set_of((sign_a == sign_b) & (sign_a != sign_c));
         set_cf(c > (((uint64_t)1 << (size_bytes * 8)) - 1));
         printf("XXX: c: %llu\n", c);
-        printf("XXX: size_bytes: %d\n", size_bytes);
+        printf("XXX: size_bytes: %zd\n", size_bytes);
         printf("XXX: maxsize[w]: %llu\n", ((uint64_t)1 << (size_bytes * 8)) - 1);
         printf("XXX: c > maxsize[w]: %d\n", (c > (((uint64_t)1 << (size_bytes * 8)) - 1)));
         if (!no_af) {

@@ -16,6 +16,9 @@ class Memory {
     uint32_t get_byte(size_t index, bool print);
     void set_byte(size_t address, uint8_t value, bool print=true);
 
+    uint32_t get_dual(size_t index, bool print=true);
+    void set_dual(size_t address, uint32_t value, bool print=true);
+
     uint32_t get_quad(size_t index, bool print=true);
     void set_quad(size_t address, uint32_t value, bool print=true);
 
