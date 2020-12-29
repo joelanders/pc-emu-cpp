@@ -34,3 +34,17 @@ InstructionFactory::create(uint8_t opcode, CPU& cpu) {
     // std::cout << "NOT CREATING" << std::endl;
     return nullptr;
 }
+
+void
+InstructionFactory::print_registered() {
+    for (auto i = 0; i < 0xff; i++) {
+        if (auto it = instruction_set.find(i); it != instruction_set.end()) {
+            print_byte_in_hex(i);
+        } else {
+            printf("   ");
+        }
+        if ((i+1) % 0x10 == 0) {
+            printf("\n");
+        }
+    }
+}

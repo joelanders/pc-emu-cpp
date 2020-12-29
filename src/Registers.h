@@ -35,6 +35,9 @@ class Registers {
     bool get_af() const { return af; }
     bool get_zf() const { return zf; }
     bool get_sf() const { return sf; }
+    bool get_tf() const { return tf; }
+    bool get_if() const { return if_; }
+    bool get_df() const { return df; }
     bool get_of() const { return of; }
 
     void set_cf(bool new_val) { cf = new_val; }
@@ -42,6 +45,9 @@ class Registers {
     void set_af(bool new_val) { af = new_val; }
     void set_zf(bool new_val) { zf = new_val; }
     void set_sf(bool new_val) { sf = new_val; }
+    void set_tf(bool new_val) { tf = new_val; }
+    void set_if(bool new_val) { if_ = new_val; }
+    void set_df(bool new_val) { df = new_val; }
     void set_of(bool new_val) { of = new_val; }
 
     void update_status_flags(uint64_t a, uint64_t b, uint64_t c, Width w, bool flip_sign, bool no_af, bool zero_of_cf,
@@ -79,6 +85,9 @@ class Registers {
     bool af;
     bool zf;
     bool sf;
+    bool tf;
+    bool if_;
+    bool df;
     bool of;
 };
 

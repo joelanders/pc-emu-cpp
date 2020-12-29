@@ -284,3 +284,91 @@ TEST(Mov, reg_mem) {
     EXPECT_EQ(0x72717069, cpu.get_memory().get_quad(0x10f0));
 }
 
+TEST(Mov, al_imm) {
+    CPU cpu;
+    std::vector<uint8_t> bytes = {0xb0, 0x69};
+    cpu.set_bytes(0x00, bytes);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(0x69, cpu.get_registers().get_eax());
+}
+
+TEST(Mov, bh_imm) {
+    CPU cpu;
+    std::vector<uint8_t> bytes = {0xb7, 0x70};
+    cpu.set_bytes(0x00, bytes);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(0x7000, cpu.get_registers().get_ebx());
+}
+
+TEST(Mov, ecx16_imm) {
+    CPU cpu;
+    cpu.current_value_size = U16;
+    std::vector<uint8_t> bytes = {0xb9, 0x71, 0x72, 0xff, 0xff};
+    cpu.set_bytes(0x00, bytes);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(0x7271, cpu.get_registers().get_ecx());
+}
+
+TEST(Mov, ebp32_imm) {
+    CPU cpu;
+    cpu.current_value_size = U32;
+    std::vector<uint8_t> bytes = {0xbd, 0x71, 0x72, 0x73, 0x74};
+    cpu.set_bytes(0x00, bytes);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(0x74737271, cpu.get_registers().get_ebp());
+}
+
+TEST(Xchg, eax_esp32) {
+    CPU cpu;
+    cpu.current_value_size = U32;
+    std::vector<uint8_t> bytes = {0x94};
+    cpu.set_bytes(0x00, bytes);
+    cpu.set_register(U32, Eax, 0x01020304);
+    cpu.set_register(U32, Esp, 0x99887766);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(0x99887766, cpu.get_registers().get_eax());
+    EXPECT_EQ(0x01020304, cpu.get_registers().get_esp());
+}
+
+TEST(Xchg, eax_esp16) {
+    CPU cpu;
+    cpu.current_value_size = U16;
+    std::vector<uint8_t> bytes = {0x94};
+    cpu.set_bytes(0x00, bytes);
+    cpu.set_register(U32, Eax, 0x01020304);
+    cpu.set_register(U32, Esp, 0x99887766);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(0x01027766, cpu.get_registers().get_eax());
+    EXPECT_EQ(0x99880304, cpu.get_registers().get_esp());
+}
+
+TEST(Clc, stc) {
+    CPU cpu;
+    std::vector<uint8_t> bytes = {0xf8, 0xf9};
+    cpu.set_bytes(0x00, bytes);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(false, cpu.get_registers().get_cf());
+    cpu.execute_next_instruction();
+    EXPECT_EQ(true, cpu.get_registers().get_cf());
+}
+
+TEST(Cli, sti) {
+    CPU cpu;
+    std::vector<uint8_t> bytes = {0xfa, 0xfb};
+    cpu.set_bytes(0x00, bytes);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(false, cpu.get_registers().get_if());
+    cpu.execute_next_instruction();
+    EXPECT_EQ(true, cpu.get_registers().get_if());
+}
+
+TEST(Cld, std) {
+    CPU cpu;
+    std::vector<uint8_t> bytes = {0xfc, 0xfd};
+    cpu.set_bytes(0x00, bytes);
+    cpu.execute_next_instruction();
+    EXPECT_EQ(false, cpu.get_registers().get_df());
+    cpu.execute_next_instruction();
+    EXPECT_EQ(true, cpu.get_registers().get_df());
+}
+
